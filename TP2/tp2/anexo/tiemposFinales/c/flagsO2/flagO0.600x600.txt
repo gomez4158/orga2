@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : C
+  Archivo de entrada : lena.bmp
+3861859
+3843834
+3842232
+3772146
+3821730
+3753801
+3863639
+3851006
+3802718
+3927148
+
+3861859
+3843834
+3842232
+3821730
+3851006
+3802718
+esperanza:3837229
+varianza:382721130
+desvio:19563

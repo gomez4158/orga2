@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+1081132
+1083878
+1079802
+1074120
+1078616
+1073304
+1084956
+1068737
+1080511
+1072272
+
+1081132
+1079802
+1074120
+1078616
+1073304
+1080511
+esperanza:1077914
+varianza:9467302
+desvio:3076

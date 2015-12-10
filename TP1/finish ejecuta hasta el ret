@@ -1,0 +1,3 @@
+finish ejecuta hasta el ret
+call lista_imprimir_f(A,stdout(inprime por pantalla), imprimir_jugador)
+u para salir de los ciclos

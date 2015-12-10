@@ -1,0 +1,313 @@
+\section{Ejercicio 7}
+\subsection*{A)}
+El scheduler fue armado a trav\'es de varias partes, en particular la isr32 que cicla las tareas. La funcion sched\_proximo\_indice (sched.c) se encarga de devolver el selector de 
+la siguiente tarea para que sea ejecutada.
+Los elementos necesarios para estas funciones, que deben ser inicializados, est\'an en el struct str\_game juego (game.h) y son inicializados junto a otras variables globales en 
+game.c.
+\begin{codesnippet}
+\begin{verbatim}
+typedef struct str_game_tp { 
+		tarea tareasA[9];	//.p en 0 si estan libres, en 1 si estan ocpuadas (son 9 para facilitar
+							//la opcion "todas ocupadas")
+		tarea tareasB[9];
+		unsigned int tareaActualA;	//sera la ultima (o actual) tarea del jugador
+		unsigned int tareaActualB;
+		unsigned int tareaRemovida;	//de 0 a 15, 0-7 = A y 8-15 = B (para el debugger)
+		unsigned int filaA;			//las filas son donde se encuentra el jugador
+		unsigned int filaB;
+		int claseA;		//la clase que tiene seleccionada el jugador
+		int claseB;
+		unsigned int jugadorActual; //para saber que jugador esta en el tic de reloj actual
+		int zombis_restantes_a; // 8 menos esto es la cantidad que se pueden lanzar.
+		int zombis_restantes_b;
+		int puntaje_A;
+		int puntaje_B;
+		unsigned int debugger;		//flag debugger
+		unsigned int _20A;			//zombies que le quedan por lanzar
+		unsigned int _20B;
+} __attribute__((__packed__)) str_game;
+\end{verbatim}
+\end{codesnippet}
+\begin{codesnippet}
+\begin{verbatim}
+void inicializarJuego()
+{
+	estaIdle = 1;
+	tiempo_esperando = 0;
+	juego.zombis_restantes_a = 8;
+	juego.zombis_restantes_b = 8;
+	juego._20A = 20;
+	juego._20B = 20;
+	juego.puntaje_A = 0;
+	juego.puntaje_B = 0;
+	
+	puntaje_o_restantes(juego._20A, 31, 47, 0x4f);
+	puntaje_o_restantes(juego._20B, 49, 47, 0x1f);
+
+	puntaje_o_restantes(juego.puntaje_A , 36, 47, 0x4f);
+	puntaje_o_restantes(juego.puntaje_B , 41, 47, 0x1f);
+
+	int i = 0;
+	for (i = 0; i < 9; i++)
+	{
+		juego.tareasA[i].p = 0;
+		juego.tareasB[i].p = 0;
+	}	
+	juego.tareaActualA = 0;
+	juego.tareaActualB = 0;
+	juego.tareaRemovida = 16; //0-7 = A, 8-15 = B, 16 invalido (no se removio ninguna tarea)
+	juego.filaA = 1;
+	juego.filaB = 1;
+	juego.claseA = 0;
+	juego.claseB = 0;
+	juego.jugadorActual = 0;
+	juego.debugger = 0;
+}
+\end{verbatim}
+\end{codesnippet}
+
+\subsection*{B)}
+sched\_proximo\_indice devolver\'a el selector de la siguiente tarea a ejecutar. Tiene en cuenta las distintas combinaciones de cantidades de zombies 
+y trabaja con las variables globales de \textbf{juego}.
+Lo que hace sched\_proximo\_indice es revisar a quien le toca jugar (en la variable juego.jugadorActual se encuentra el \'ultimo en jugar, asi que 
+debe tomar el contrario), y de \'ese jugador revisar\'a cual es el zombie para lanzar. En caso de que no haya ninguno, lanzar\'a un zombie del jugador 
+contrario, y en caso de que ninguno tenga zombies devolver\'a $0$ para que no salte a ninguna tarea (porque siempre la anterior tarea ser\'a la Idle).
+Si el jugador del turno actual no tiene zombies y se lanza un zombie del jugador contrario, se avisar\'a por medio de la variable juego.jugadorActual 
+este hecho para que no se salteen turnos en ning\'un caso.
+\begin{codesnippet}
+\begin{verbatim}
+if (juego.jugadorActual == 0) 
+	{	//si el actual es A, ahora pasa a jugar B 
+		res = sched_indice_B();
+		if (res == 8) {	//si no hay zombies de B...
+			res = sched_indice_A();
+			if (res == 8) { //si no hay zombies de A..
+				res = 0;
+			} else {	//si hay zombies de A..
+				if (juego.tareaActualA == res && !estaIdle) {
+						//si hay un solo zombie de A..
+					res = 0;
+				} else {	
+					juego.tareaActualA = res;
+					res = (res + GDT_IDX_TSS_A0) *8;
+				}
+				
+				juego.jugadorActual = 1;
+			}
+		} else {	//si hay zombies de B..
+			juego.tareaActualB = res;
+			res = (res + GDT_IDX_TSS_B0) *8;
+		}
+	}
+\end{verbatim}
+\end{codesnippet}
+
+\subsection*{C)}
+Para este punto se modific\'o el funcionamiento de la rutina de atencion de int 0x66 (isr102) que se tenia en el punto 5. Ahora, se va a encargar de 
+mover al zombie de la tarea 
+que se esta ejecutando. La interrupci\'on llama a game\_move\_current\_zombi. Una vez realizada la acci\'on correspondiente se procede a saltar a la 
+tarea idle, si no se esta ejecutando por alguna raz\'on (como puede ser que tire una excepci\'on).
+
+isr102 recibir\'a por $eax$ la direcci\'on a la que se debe mover. game\_move\_current\_zombi lo toma y calcula la nueva posici\'on. Guarda la 
+vieja posici\'on para saber de donde copiar el c\'odigo de la tarea zombie.
+
+game\_move\_current\_zombi toma en cuenta los casos de que el zombie llegue a la fila superior o inferior, ya que el mapa es cilindrico. Tambi\'en 
+ve los casos en los que llega a uno u otro extremo, ya que debe desalojar la tarea (con .p = 0) y darle el punto al jugador correspondiente.
+
+\begin{codesnippet}
+\begin{verbatim}
+_isr102:
+	cli
+	pushad
+	push eax
+	call game_move_current_zombi
+	cmp BYTE [estaIdle], 0x1
+	je .fin
+	mov dword [estaIdle], 0x1
+	mov dword [selector], 0x70
+	
+	jmp far [offset]
+	jmp .fin
+.fin:
+	pop eax
+	popad
+	iret
+\end{verbatim}
+\end{codesnippet}
+
+\subsection*{D)}
+La atenci\'on de la interrupci\'on del reloj saltar\'a siempre que haya al menos un zombie (si no hay, sched_proximo_indice devolver\'a 0). 
+cambiar\_jug\_actual modifica 
+juego.jugadorActual. El cambio de tareas, que se realiza dentro de la isr32 tiene los casos de cambio de tarea a la idle, a un zombie o no 
+saltar (siempre que se deba saltar a la tarea que se est\'a corriendo en ese momento).
+
+
+Ademas, si en un tiempo determinado (1000 ticks) ning\'un jugador realiza un lanzamiento (a\'un habiendo zombies por lanzar) y 
+ning\'un zombie se mueve, el juego finaliza utilizand\'o como criterio de ganador el valor que se tenga hasta el momento de $puntaje\_A$ y 
+$puntaje\_B$. Para esto, cada vez que se produzca un tick de reloj (fuera del modo debugger) se 
+increment\'a una variable global llamada $tiempo\_esperando$ (inicializada en cero). Pero, si un jugador lanza un zombie o se produce un movimiento de 
+los mismos vuelve al 
+valor cero. En caso de que se llegue al valor 1000 se llama a la funci\'on $ganador$, la misma verifica el valor de par\'ametro de entrada. Si es 1, 
+que es este caso, se 
+muestra por pantalla quien es el ganador y se setea el valor de $\_20A$ y $ \_20B$ como cero, para indicar que ya no se pueden lanzar m\'as zombies y 
+dar por finalizado el 
+juego. Si es otro valor y $\_20A$ y $ \_20B$ son iguales a cero se lanzaron todos los zombies y se muestra al ganador. En cualquiera de los dos 
+casos, luego de finalizar el juego se salta a la tarea idle.
+
+Este m\'etodo de parada fue diseñado por el hecho de que una tarea puede ser modificada por otra tarea en el medio de campo, y como consecuencia 
+dejar de moverse.
+
+		
+\begin{codesnippet}
+\begin{verbatim}
+_isr32:
+	cli
+	pushad
+		;prioridad: si estamos en el debugger no se toca nada
+		mov eax, 1
+		cmp eax, [Debugger]
+		je .debugger
+			;si no estamos en el debugger, y no se toco nada hace 1000 
+			;ciclos de reloj, asumo que el juego termino.
+		inc dword[tiempo_esperando]
+		cmp dword [tiempo_esperando], 1000
+		jge .termino
+	;dibujo los clocks
+	call clock
+	call proximo_reloj
+	;paso a la tarea siguiente (o me quedo en esta si son la misma
+	call sched_proximo_indice
+	push eax
+	call cambiar_jug_actual
+	pop eax
+	cmp ax, 0
+	je .noJump
+	mov [selector], ax
+	mov dword [estaIdle], 0
+	call fin_intr_pic1
+	jmp far [offset]
+	jmp .end
+.termino:
+	xor eax, eax
+	inc eax
+	push eax
+	call ganador
+	pop eax
+.debugger:
+	cmp byte [estaIdle], 1
+	je .noJump
+	mov dword [estaIdle], 0x1
+	mov dword [selector], 0x70
+	jmp far [offset]
+.noJump:
+	call fin_intr_pic1
+.end:
+	popad
+	iret
+	iret
+\end{verbatim}
+\end{codesnippet}
+
+\subsection*{E)}
+El desalojo de las tareas al producirse una excepci\'on se realiza en $desalojar\_tarea$, la cual desaloja simplmente poniendo 0 en la propiedad 
+$p$ de la tarea, en el struct $juego$. Adem\'as de anularla habilita al jugador de la tarea desalojada a lanzar un nuevo zombie.
+
+\begin{codesnippet}
+\begin{verbatim}
+%macro ISR 1
+global _isr%1
+
+_isr%1:
+    mov EAX, %1
+    PUSH EAX
+    CALL mostrarError
+    pop eax
+.fin:
+    call desalojar_tarea
+    
+    mov dword [estaIdle], 0x1
+    mov dword [selector], 0x70
+	jmp far [offset]
+    iret
+%endmacro
+\end{verbatim}
+\end{codesnippet}
+
+\subsection*{F)} El mecanismo de debugging utilizar\'a en primer lugar juego.tareaRemovida, variable que devolver\'a qu\'e tarea es de la que tiene que mostrar informaci\'on, 
+y juego.debugger que servir\'a de flag para indicar si debe activarse el debugger o no. Esta variable se modifica al pulsar la tecla 'y'.
+La funci\'on principal que se encarga de controlar el proceso es mDebugger(), la cual se encarga de copiar el sector de la pantalla a una variable global para tal fin, y luego 
+cargar el fondo y las etiquetas de cada registro.
+Los datos son cargados con cargoDebugger(), que lee los datos de la tss de la tarea reci\'en desalojada. Luego, se queda en la tarea Idle hasta que una 
+interrupci\'on de teclado hace salir del bucle. 
+\begin{codesnippet}
+\begin{verbatim}
+void mDebugger()
+{
+	//guarda la pantalla, pega la pantalla y luego llama a una funcion en asm q imprime el estado de los registros
+	//guardo columnas 25-55, filas 6-42 (36 filas, 30 cols)
+	if (juego.debugger)
+	{
+		guardoPantalla();
+		Debugger = 1;
+
+	//[...] dibujo la pantalla del debugger
+		
+		cargoDebugger();
+	}
+}
+\end{verbatim}
+\end{codesnippet}
+
+\begin{codesnippet}
+\begin{verbatim}
+void cargoDebugger()
+{
+	unsigned int base2;
+	base2 = (unsigned int)gdt[juego.tareaRemovida + GDT_IDX_TSS_A0].base_0_15;
+	base2 += (unsigned int)gdt[juego.tareaRemovida + GDT_IDX_TSS_A0].base_23_16 << 16;
+	base2 += (unsigned int)gdt[juego.tareaRemovida + GDT_IDX_TSS_A0].base_31_24 << 24;
+
+	tss* base = (tss*)base2;
+	//base apunta a la tss que desaloje
+	if (juego.tareaRemovida < 8)
+	{
+		switch (juego.tareasA[juego.tareaActualA].clase)
+		{
+			case 0:
+				print("Zombie  A  Guerrero", 26, 7, 0x1f);
+				break;			
+			case 1:
+				print("Zombie  A  Mago", 26, 7, 0x1f);
+				break;			
+			case 2:
+				print("Zombie  A  Clerigo", 26, 7, 0x1f);
+				break;			
+		}
+	}
+	else
+	{
+		switch (juego.tareasB[juego.tareaActualB].clase)
+		{
+			case 0:
+				print("Zombie  B  Guerrero", 26, 7, 0x1f);
+				break;			
+			case 1:
+				print("Zombie  B  Mago", 26, 7, 0x1f);
+				break;			
+			case 2:
+				print("Zombie  B  Clerigo", 26, 7, 0x1f);
+				break;			
+		}
+	}
+	
+//	[...] escribo en pantalla el valor de los registros pedidos y la pila de la tarea
+}
+\end{verbatim}
+\end{codesnippet}
+
+Es importante notar que luego de cargarse el debugger, al estar la variable Debugger en 1, la interrupci\'on isr32 (reloj) no cambiar\'a de tareas y 
+se quedar\'a en la idle (o cambiar\'a a esta de encontrarse en otra tarea) hasta que se produzca una interrupci\'on de teclado. En la funci\'on 
+\textbf{teclado}, si la interrupci\'on fue dada por precionar una tecla, actualizar\'a el valor de la variable Debugger en 0, haciendo que se 
+cargue el sector de la pantalla que fue removido al pasar al modo debugger.
+
+

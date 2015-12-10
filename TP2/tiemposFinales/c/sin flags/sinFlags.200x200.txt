@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : C
+  Archivo de entrada : lena.bmp
+2796959
+2773078
+2757380
+2669267
+2700551
+2751035
+2683876
+2876347
+2711066
+2656731
+
+2773078
+2757380
+2700551
+2751035
+2683876
+2711066
+esperanza:2729497
+varianza:1066583168
+desvio:32658

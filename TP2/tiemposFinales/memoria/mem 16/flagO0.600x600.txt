@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+4774139
+4738365
+4691598
+4678326
+4646834
+4703681
+4876656
+4709996
+4739224
+4706955
+
+4738365
+4691598
+4703681
+4709996
+4739224
+4706955
+esperanza:4714969
+varianza:316375891
+desvio:17786

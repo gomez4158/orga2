@@ -1,0 +1,46 @@
+\section{Ejercicio 5}
+
+
+\subsection*{A)}
+
+En el archivo idt.c se defini\'o a la funci\'on $idt\_inicializar$ (descripta en el punto 2).  En esta instancia es necesario definir tres nuevas entradas: $IDT\_ENTRY(32)$; $IDT\_ENTRY(33)$; $IDT\_ENTRY(102)$;\newline
+ La primera se utiliza para asociar una rutina a la interrupci\'on del reloj, la segunda para la interrupci\'on del teclado y la u\'ltima para la interrupci\'on del software 0x66. 
+Como se est\'an agregando tres nuevos descriptores es necesario completar sus campos.  Por lo que en el archivo isr.h se definieron las funciones $\_isr32()$, $\_isr33()$ e $\_isr102()$;  As\'i podemos obtener el offset de cada una. Y  finalmente se defini\'o en el archivo irs.asm una rutina para cada una, encargada de validar dichas interrupciones 
+y que realicen lo deseado.\newline
+
+Primera interrupci\'on, Reloj: \newline
+como La maquina posee un reloj interno que genera interrupciones en ciertos intervalos regulares de tiempo. Se utilizaran estas interrupciones para que  se ejecute una rutina cada 
+vez que esto sucede. Principalmente se completaran los atributos de su descriptor con P = 1(segmento presente); DPL= 0 (nivel de privilegio), y el offset con la direcci\'on de la 
+funci\'on $\_isr32()$. \newline
+Segunda interrupci\'on, Teclado: \newline
+Los campos del descriptor se completaron con los mismos valores que para la anterior interrupci\'on, variando el offset que ahora es la de la funci\'on $\_isr33()$. \newline
+Tercera Interrupci\'on, 0x66: \newline
+A diferencia de las otras interrupciones, esta es provocada por las tareas como la misma se ejecutan a nivel de usuario (3). El dpl de este descriptor debe ser 3. mientras que los 
+dem\'as atributos tienen el mismo valor que para las anteriores interrupciones, con el offset correspondiente ($isr\_102$).
+
+\subsection*{B)}
+Primera interrupci\'on, Reloj: \newline
+En $isr.asm$  el c\'odigo se encarga de:\newline
+Deshabilitar la interrupciones ($cli$) preservando los registros que hay hasta el momento ($popad$). Se llama a la funci\'on $proximo\_reloj$ para que cada vez que se produzca un 
+tick la funci\'on se encargue de mostrar en el margen inferior de la pantalla una animaci\'on de un cursor rotando. Por ultimo se comunica al PIC que se atendi\'o la interrupci\'on 
+($fin\_intr\_pic1$), se restauran los registros ($popad$), se vuelven a activar las interrupciones ($sti$) y se retorna de las interrupciones ($iret$). (posteriormente esta 
+funci\'on se modific\'o para adaptarse a lo pedido en el punto 7, m\'as adelante se describir\'a esta modificaci\'on).
+
+\subsection*{C)}
+Segunda interrupci\'on, Teclado: \newline
+En isr.asm tambi\'en se procedi\'o a deshabilitar las interrupciones y preservar los registros. Como el teclado se lee a trav\'es  del puerto 0x60, por medio de la 
+instrucci\'on in al, 0x60. Cada vez que se presiona una tecla se consigue un scan code de la misma. Como seg\'un la tecla oprimida el juego realiza distintas acciones. Se crea 
+una funci\'on, en $screen.c$,  llamada teclado. La misma recibe por par\'ametro el scan code de la tecla oprimida.  Si el mismo, no es el correspondiente a ninguna de las teclas 
+del juego entonces no se realiza nada. De lo contrario,  se cuenta con una struct que representa al juego, $str\_game$ (definida en $game.h$). La misma cuenta con atributos como 
+filaA,  filaB,  claseA,  claseB; Los primeros dos representan la fila desde donde se lanzara al Zombie seg\'un el jugador. Y los \'ultimos dos la clase del zombie lanzado. Por lo 
+que si el scan code recibido corresponde a las tecla W o S, se incrementa o se reduce el valor de  filaA, correspondientemente. Y lo mismo sucede con claseA cuando se oprima A o D. 
+An\'alogamente, con las teclas correspondiente, se modifica filaB o ClaseB. Adem\'as si se oprime shiftLeft, se llama a la funci\'on $game\_lanzar\_zombie$ (funci\'on descripta mas 
+adelante) con el par\'ametro cero, el mismo hace referencia al Jugador A. En el caso de oprimirse ShiftRight se llama a la misma funci\'on pero con 1, jugador B .  
+Finalizada las acciones correspondientes se restauran los registros, se comunica que se atendi\'o la interrupci\'on y se vuelve de la misma.
+
+\subsection*{D)}
+Tercera Interrupci\'on, 0x66: \newline
+ Al igual que en las anteriores, en $isr.asm$, se comienza deshabilitando las interrupciones. Se preservan los registros, y se procede a realizar lo pedido en esta instancia. Solo 
+ se debe modificar el valor de un registro (eax). Finalizado, se comunica que se atendi\'o la interrupci\'on, se restauran los registros y se vuelve de la interrupci\'on. 
+ (Posteriormente esta interrupci\'on sera modificada para adaptarse a lo pedido en el ejercicio 7)
+ 

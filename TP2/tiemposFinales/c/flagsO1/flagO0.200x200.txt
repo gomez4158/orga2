@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : C
+  Archivo de entrada : lena.bmp
+512341
+533510
+540463
+517893
+528624
+534839
+519421
+529238
+527019
+526530
+
+533510
+528624
+519421
+529238
+527019
+526530
+esperanza:527390
+varianza:17795743
+desvio:4218

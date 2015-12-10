@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+3769376
+3731398
+3732906
+3752108
+3716568
+3720876
+3726419
+3738304
+3723623
+3729655
+
+3731398
+3732906
+3726419
+3738304
+3723623
+3729655
+esperanza:3730384
+varianza:22013144
+desvio:4691

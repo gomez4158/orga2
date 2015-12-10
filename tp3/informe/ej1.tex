@@ -1,0 +1,53 @@
+\section{Ejercicio 1}
+\subsection*{A)}
+Utilizando el struct str\_gdt\_entry dada en $gdt.h$  completamos los primeros 8 (contando desde 0) descriptores con todos los campos en 0 ya que estos son descriptores nulos.\newline
+En la posici\'on 9 est\'a el descriptor de c\'odigo de nivel 0. Este tiene que direccionar los primeros 624MB, pero como usamos granularidad tenemos que pasar la unidad de B a 4KB. 
+Entonces la base es el resultado de esto (0x26EFF) y la acomodamos en las partes donde corresponde (porque est\'a "partida").
+La base es 0. El tipo es A (ejecuci\'on y lectura). S (Descriptor type) es 1 porque es de tipo c\'odigo. Dpl es 0 porque es c\'odigo de nivel 0. D/b es 1 porque es para 32 bits. Presente est\'a en 1 porque lo vamos a usar. \newline
+En la posici\'on 10 está lo mismo que en la posici\'on 9, pero dpl cambia a 3 porque es c\'odigo de nivel 3. \newline
+En la posici\'on 11 est\'a el descriptor de datos de nivel 0, es lo mismo que en la posici\'on 9 pero cambiando tipo por 2 ya que es de lectura/escritura.\newline
+En la posici\'on 12 está lo mismo que en la 11 pero cambia el dpl a 3 ya que el descriptor de datos es de nivel 3.
+En la posici\'on 13 est\'a el descriptor de video, lo mismo que  en la posici\'on 12, cambiando la base por 0xB8000 y el dpl es 0. \newline
+
+Luego para entender mejor que descriptor es cada posici\'on realizamos defines, en el archivo $defines.h$, para cada uno de ellos, as\'i tambi\'en sus offsets (posici\'on * 8).
+
+\subsection*{B)}
+En $kernel.asm$, habilitamos el pin A20 con call habilitar\_A20. Cargamos la gdt con LGDT y GDT\_DESC(función en $gdt.c$) ,luego seteamos el bit PE de CR0, e hicimos un JUMP 
+para pasar a modo protegido en el segmento de c\'odigo nivel 0 (el jmp es necesario para cambiar el valor del registro $cs$).\newline
+Luego, inicializamos los selectores de segmentos, data (ds) con el offset de la posici\'on 10 (datos de nivel 0), así también para todos los segmentos restantes menos para $fs$ que tiene el offset de la posici\'on 12(desciptor de video). 
+Por \'ultimo pusimos en $esp$, y en $ebp$ 0x27000 (ya que la pila debe comenzar en esta direcci\'on).
+
+\subsection*{C)}
+Para describir el \'area de la pantalla en memoria, para ser utilizado por el Kernel, se declaro la entrada de la posici\'on 12 en la GDT, el mismo corresponde al segmento de 
+video (Explicado en A) y el segmento correspondiente para video sera el fs, inicializado con el offset de dicha entrada.
+
+\subsection*{D)}
+Se procedio a limpiar la pantalla con el coloreo b\'asico, que es pintar todo el mapa de verde y las barras laterales de rojo y azul. Usando el segmento definido 
+anteriormente. El pseudoc\'odigo para realizar esto es el siguiente: 
+\begin{codesnippet}
+\begin{verbatim}
+    ; la pantalla esta representada por una mariz de tamaño 50x80 
+    ; donde cada elemento ocupa 2 bytes
+        xor ecx, ecx
+        xor edx, edx 
+	inc edx
+	xor esi, esi
+	add esi, 159
+.ciclo: ;pinto de verde
+	cmp ecx, 8000		;tamano de la pantalla
+	je .ciclo2
+	mov byte [fs:ecx], 0x22	;verde en el fondo
+	inc ecx		;avanzo en la matriz
+	jmp .ciclo	
+.ciclo2: ; pinto barras
+	cmp edx, 8000
+	jae .mapa_ok
+	mov byte [fs:edx], 0x44	;rojo
+	mov byte [fs:esi], 0x11	;azul
+	add edx, 160 
+	add esi, 160
+	jmp .ciclo2
+.mapa_ok:
+
+\end{verbatim}
+\end{codesnippet}

@@ -1,0 +1,800 @@
+/*	int res;
+	res = string_iguales ("hola","hola");
+
+
+	printf( "\niguales?: %d \n", res );
+
+	res = string_comparar ("aa","aab"); 
+
+	printf( "\ncomparar: %d \n", res );*/
+
+    
+
+
+    
+   	                                                        // //pais Jugador
+ /*  	 jugador *j3;
+    char *nom3 = "z";
+    char *pa3 = "u";
+    unsigned int nu3 = 1 ;
+    unsigned int a3 = 1;
+    j3 = crear_jugador(nom3,pa3,nu3,a3);
+
+    jugador *j4;
+    char *nom4 = "hola";
+    char *pa4 = "arg";
+    unsigned int nu4 = 10 ;
+    unsigned int a4 = 1;  
+    j4 = crear_jugador(nom4,pa4,nu4,a4);
+
+    bool b2;
+    b2=pais_jugador(j3,j4);
+   	printf( "\npais_jugador: %d \n", b2 );
+*/
+
+                                                                    // imprimi Jugador
+ /*    jugador *j5;
+    char *nom5 = "hola";
+    char *pa5 = "argn";
+    unsigned int nu5 = 10;
+    unsigned int a5 = 1; 
+    j5 = crear_jugador(nom5,pa5,nu5,a5);
+
+    FILE *archivo = fopen("jugadores.txt","a");
+    imprimir_jugador(j5,archivo);
+    fclose(archivo);*/
+
+                                                                    //menor jugador
+  /*  jugador *j6;
+    char *nom6 = "assa";
+    char *pa6 = "argn";
+    unsigned int nu6 = 10;
+    unsigned int a6 = 1; 
+    j6 = crear_jugador(nom6,pa6,nu6,a6);
+
+    jugador *j7;
+    char *nom7 = "assab";
+    char *pa7 = "argn";
+    unsigned int nu7 = 10;
+    unsigned int a7 = 10; 
+    j7 = crear_jugador(nom7,pa7,nu7,a7);
+
+    bool b=menor_jugador(j6,j7);
+    printf("%d\n", b);*/
+
+
+
+                                             //lista imprirmir
+/*    jugador *j6;
+    char *nom6 = "";
+    char *pa6 = "argn";
+    unsigned int nu6 = 10;
+    unsigned int a6 = 1;     
+    nodo *nod;
+    j6 = crear_jugador(nom6,pa6,nu6,a6);
+
+    // nod=nodo_crear(j6);     
+
+    lista *l;
+    l=lista_crear();
+
+    for (int i = 0; i < 5; ++i)
+    {
+        j6 = crear_jugador(nom6,pa6,nu6,a6);
+        nodo *nod;
+        nod=nodo_crear(j6); 
+        insertar_ultimo(l,nod);
+    }
+
+
+
+    lista_imprimir(l, "imprimirListas.txt", (tipo_funcion_imprimir)
+ imprimir_jugador);
+*/
+
+                                                                //listas borrar
+/*     jugador *j6;
+    char *nom6 = "hola";
+    char *pa6 = "argn";
+    unsigned int nu6 = 10;
+    unsigned int a6 = 1;     
+    nodo *nod;
+
+    lista *l;
+    l=lista_crear();
+
+
+    for (int i = 0; i < 5 ; ++i)
+    {
+        j6 = crear_jugador(nom6,pa6,nu6,a6);
+        nodo *nod;
+        nod=nodo_crear(j6); 
+        insertar_ultimo(l,nod);
+    }
+    
+    // lista_imprimir(l, "imprimirListas.txt", (tipo_funcion_imprimir)
+    // imprimir_jugador);
+
+    lista_borrar( l, (tipo_funcion_borrar) borrar_jugador);*/
+
+                                        //normalizar Jugador
+ /* jugador *j6;
+    char *nom6 = "ñoLa";
+    char *pa6 = "argn";
+    unsigned int nu6 = 13;
+    unsigned int a6 = 196;     
+
+
+    j6= crear_jugador(nom6,pa6,nu6,a6);
+
+    // printf("%s %s %u %u ", nom6,pa6,nu6,a6 );
+
+   jugador *j7;
+    
+    j7=normalizar_jugador(j6);
+
+    FILE *archivo = fopen ("jugadores.txt","a");
+    imprimir_jugador(j7,archivo);
+    fclose(archivo);
+
+    borrar_jugador(j6);
+    borrar_jugador(j7);*/
+    
+
+
+                                                            //pais Jugador
+    // jugador *j6;
+    // char *nom6 = "ñoLa";
+    // char *pa6 = "A";
+    // unsigned int nu6 = 13;
+    // unsigned int a6 = 196;     
+    // j6= crear_jugador(nom6,pa6,nu6,a6);
+
+    // jugador *j5;
+    // char *nom5 = "a";
+    // char *pa5 = "";
+    // unsigned int nu5 = 10;
+    // unsigned int a5 = 1; 
+    // j5 = crear_jugador(nom5,pa5,nu5,a5);
+
+    // bool b;
+    // b=pais_jugador(j5,j6);
+    // printf("%u\n", b);
+
+                                                        //crear_seleccion
+    /*jugador *j6;
+    char *nom6 = "hola";
+    char *pa6 = "argn";
+    unsigned int nu6 = 10;
+    unsigned int a6 = 1;     
+    nodo *nod;
+
+    lista *l=lista_crear();
+
+
+    for (int i = 0; i < 5 ; ++i)
+    {
+        j6 = crear_jugador(nom6,pa6,nu6,a6);
+        nodo *nod;
+        nod=nodo_crear(j6); 
+        insertar_ultimo(l,nod);
+    }
+
+    double prom = 2.3;
+    char *pa = "";
+    seleccion *s= crear_seleccion(pa,prom,l);*/
+
+
+                                                        //menor_seleccion
+    // jugador *j6;
+    // char *nom6 = "hola";
+    // char *pa6 = "argn";
+    // unsigned int nu6 = 10;
+    // unsigned int a6 = 1;     
+    // nodo *nod;
+
+    // lista *l=lista_crear();
+
+
+    // for (int i = 0; i < 5 ; ++i)
+    // {
+    //     j6 = crear_jugador(nom6,pa6,nu6,a6);
+    //     nodo *nod;
+    //     nod=nodo_crear(j6); 
+    //     insertar_ultimo(l,nod);
+    // }
+
+    // double prom = 2.3;
+    // char *pa = "";
+    // seleccion *s= crear_seleccion(pa,prom,l);
+
+    // lista *l2=lista_crear();
+
+    // for (int i = 0; i < 5 ; ++i)
+    // {
+    //     j6 = crear_jugador(nom6,pa6,nu6,a6);
+    //     nodo *nod;
+    //     nod=nodo_crear(j6); 
+    //     insertar_ultimo(l2,nod);
+    // }
+
+    // double prom2= 2.5;
+    // char *pa2 = "bra";    
+    // seleccion * s2= crear_seleccion(pa2,prom2,l2);
+
+
+    // bool b;
+    // b=menor_seleccion(s,s2);
+    // printf("%u\n", b);    
+
+
+                                                    //primerJugador
+                                                        
+   /* jugador *j6;
+    char *nom6 = "pepe";
+    char *pa6 = "argn";
+    unsigned int nu6 = 10;
+    unsigned int a6 = 1;     
+
+    lista *l=lista_crear();
+
+    nodo *nod;
+
+      for (int i = 0; i < 5 ; ++i)
+    {
+        j6 = crear_jugador(nom6,pa6,nu6,a6);
+        nod=nodo_crear(j6); 
+        insertar_ultimo(l,nod);
+    }
+
+    double prom = 2.3;
+    char *pa = "arg";
+    seleccion * s= crear_seleccion(pa,prom,l);
+
+    jugador *j5;
+    j5 = primer_jugador(s);
+
+    
+    FILE *archivo = fopen("jugadores.txt","a");
+    imprimir_jugador(j5,archivo);
+    fclose(archivo);*/
+
+
+                                        //borrar seleccion;
+
+/*    jugador *j6;
+
+    lista *l=lista_crear();
+
+    j6 = crear_jugador("nom6","pa6",10,189);
+    nodo *nod=nodo_crear(j6); 
+    insertar_ultimo(l,nod);
+
+
+    seleccion *s= crear_seleccion("arg",2.3,l);
+
+    
+    borrar_seleccion(s);*/
+
+
+
+  
+                            //imprimir seleccion 
+    // jugador *j6;
+    // char *nom6 = "hola";
+    // char *pa6 = "argn";
+    // unsigned int nu6 = 10;
+    // unsigned int a6 = 1;     
+    // nodo *nod;
+    // j6 = crear_jugador(nom6,pa6,nu6,a6);
+
+    // // nod=nodo_crear(j6);     
+
+    // lista *l;
+    // l=lista_crear();
+
+    // for (int i = 0; i < 5; ++i)
+    // {
+    //     j6 = crear_jugador(nom6,pa6,nu6,a6);
+    //     nodo *nod;
+    //     nod=nodo_crear(j6); 
+    //     insertar_ultimo(l,nod);
+    // }
+
+    // jugador *j= crear_jugador("hola","argn",10,1);
+    // nodo *nod1 = nodo_crear( j);
+
+
+    // lista *filtrar = filtrar_jugadores (l, (tipo_funcion_cmp) pais_jugador, nod1);
+    // double prom = altura_promedio(filtrar);
+
+    // seleccion *s= crear_seleccion("agn",prom,l);
+
+    // FILE *archivo = fopen("jugadores.txt","a");
+    // imprimir_seleccion(s,archivo);
+    // fclose(archivo);
+
+
+
+                                    // insertarOrdenado
+
+    // jugador *j1 = crear_jugador("a", "ra", 10, 4);
+    // jugador *j2 = crear_jugador("f", "ra", 10, 4);
+    // jugador *j3 = crear_jugador("dd", "ra", 10, 4);
+    // jugador *j4 = crear_jugador("ei", "ra", 10, 4);
+    // jugador *j5 = crear_jugador("er", "ra", 10, 4);
+    // jugador *j6 = crear_jugador("u", "ra", 10, 4);
+    // jugador *j7 = crear_jugador("ty", "ra", 10, 4);
+    // jugador *j8 = crear_jugador("fd", "ra", 10, 4);
+    // jugador *j9 = crear_jugador("sd", "ra", 10, 4);
+   
+
+    // lista *l= lista_crear();
+
+    // insertar_ordenado(l,j1,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j2,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j3,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j4,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j5,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j6,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j7,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j8,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j9,(tipo_funcion_cmp) menor_jugador);
+    // jugador *ult = l->ultimo->datos;
+    // insertar_ordenado(l,ult,(tipo_funcion_cmp) menor_jugador);
+
+
+    // lista_imprimir(l, "imprimirListas.txt", (tipo_funcion_imprimir) imprimir_jugador);
+
+
+                                                //altura promedio
+
+
+
+    // jugador *j1 = crear_jugador("a", "ra", 10,10);
+    // jugador *j2 = crear_jugador("f", "ra", 10, 10);
+    // jugador *j3 = crear_jugador("dd", "ra", 10, 10);
+    // jugador *j4 = crear_jugador("ei", "ra", 10, 10);
+    // jugador *j5 = crear_jugador("er", "ra", 10, 10);
+    // jugador *j6 = crear_jugador("u", "ra", 10, 10);
+    // jugador *j7 = crear_jugador("ty", "ra", 10, 10);
+    // jugador *j8 = crear_jugador("fd", "ra", 10, 10);
+    // jugador *j9 = crear_jugador("sd", "ra", 10, 10);
+
+
+   
+
+    // lista *l= lista_crear();
+
+    // insertar_ordenado(l,j1,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j2,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j3,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j4,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j5,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j6,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j7,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j8,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j9,(tipo_funcion_cmp) menor_jugador);
+    // insertar_ordenado(l,j9,(tipo_funcion_cmp) menor_jugador);
+
+    // double d = altura_promedio (l);
+  
+
+    // printf("%.2f\n", d );
+
+
+                            // ordenar lista
+
+
+    // jugador *j1 = crear_jugador("a", "ra", 10,10);
+    // jugador *j2 = crear_jugador("f", "ra", 10, 10);
+    // jugador *j3 = crear_jugador("dd", "ra", 10, 10);
+    // jugador *j4 = crear_jugador("ei", "ra", 10, 10);
+    // jugador *j5 = crear_jugador("er", "ra", 10, 10);
+    // jugador *j6 = crear_jugador("u", "ra", 10, 10);
+    // jugador *j7 = crear_jugador("ty", "ra", 10, 10);
+    // jugador *j8 = crear_jugador("fd", "ra", 10, 10);
+    // jugador *j9 = crear_jugador("sd", "ra", 10, 10);
+
+    // lista *l= lista_crear();
+
+    // insertar_ultimo(l,nodo_crear (j1));
+    // insertar_ultimo(l,nodo_crear (j2));
+    // insertar_ultimo(l,nodo_crear (j3));
+    // insertar_ultimo(l,nodo_crear (j4));
+    // insertar_ultimo(l,nodo_crear (j5));
+    // insertar_ultimo(l,nodo_crear (j6));
+    // insertar_ultimo(l,nodo_crear (j7));
+    // insertar_ultimo(l,nodo_crear (j8));
+    // insertar_ultimo(l,nodo_crear (j9));
+    // insertar_ultimo(l,nodo_crear (j9));
+
+  
+
+    // lista *l1=ordenar_lista_jugadores(l);
+
+    // lista_imprimir(l1, "imprimirListas.txt", (tipo_funcion_imprimir)
+    // imprimir_jugador);
+
+
+                    //mapear
+
+
+    // jugador *j1 = crear_jugador("a", "ra", 10,198);
+    // jugador *j2 = crear_jugador("f", "ra", 10, 145);
+    // jugador *j3 = crear_jugador("dd", "ra", 10, 156);
+    // jugador *j4 = crear_jugador("ei", "ra", 10, 197);
+    // jugador *j5 = crear_jugador("er", "ra", 10, 145);
+    // jugador *j6 = crear_jugador("u", "ra", 10, 178);
+    // jugador *j7 = crear_jugador("ty", "ra", 10, 198);
+    // jugador *j8 = crear_jugador("fd", "ra", 10, 190);
+    // jugador *j9 = crear_jugador("sd", "ra", 10, 178);
+
+    // lista *l= lista_crear();
+
+    // insertar_ultimo(l,nodo_crear (j1));
+    // insertar_ultimo(l,nodo_crear (j2));
+    // insertar_ultimo(l,nodo_crear (j3));
+    // insertar_ultimo(l,nodo_crear (j4));
+    // insertar_ultimo(l,nodo_crear (j5));
+    // insertar_ultimo(l,nodo_crear (j6));
+    // insertar_ultimo(l,nodo_crear (j7));
+    // insertar_ultimo(l,nodo_crear (j8));
+    // insertar_ultimo(l,nodo_crear (j9));
+    // insertar_ultimo(l,nodo_crear (j9));
+
+
+                    //pertenece
+
+    //     lista *l= lista_crear();
+
+    // insertar_ultimo(l,nodo_crear ("hola"));
+    // insertar_ultimo(l,nodo_crear ("chau"));
+
+    // bool b = pertenece(l,"hola", (tipo_funcion_cmp) string_iguales);
+    // printf("%u\n", b);
+
+    // lista *l1=mapear(l, (tipo_funcion_mapear) normalizar_jugador) ;
+    // lista_imprimir(l1, "imprimirListas.txt", (tipo_funcion_imprimir)
+    // imprimir_jugador);
+
+    // lista *l;
+    // nodo *nod;
+    // nod=nodo_crear(j7);
+    // insertar_ultimo(l,nod);
+/*    lista_imprimir(l, "imprimirListas.txt", (tipo_funcion_imprimir)
+    imprimir_jugador);*/
+    //crear_seleccion
+
+    // lista *jugadores;
+    // jugadores=lista_crear();
+    
+    // double alt = 160;
+    // char *pais = malloc(8);
+    // pais = "arg";
+
+    // crear_seleccion(pais,alt,jugadores);
+                                        //crearSelecciones
+
+
+   //  jugador *j1 = crear_jugador("a", "arg", 10,198);
+   //  jugador *j2 = crear_jugador("f", "arg", 10, 145);
+   //  jugador *j3 = crear_jugador("dd", "chi", 10, 156);
+   //  jugador *j4 = crear_jugador("ei", "bra", 10, 197);
+   //  jugador *j5 = crear_jugador("er", "can", 10, 145);
+   //  jugador *j6 = crear_jugador("u", "bra", 10, 178);
+   //  jugador *j7 = crear_jugador("ty", "arg", 10, 198);
+   //  jugador *j8 = crear_jugador("fd", "chi", 10, 190);
+   //  jugador *j9 = crear_jugador("sd", "chi", 10, 100);
+
+   //  lista *l= lista_crear();
+
+   //  insertar_ultimo(l,nodo_crear (j1));
+   //  insertar_ultimo(l,nodo_crear (j2));
+   //  insertar_ultimo(l,nodo_crear (j3));
+   //  insertar_ultimo(l,nodo_crear (j4));
+   //  insertar_ultimo(l,nodo_crear (j5));
+   //  insertar_ultimo(l,nodo_crear (j6));
+   //  insertar_ultimo(l,nodo_crear (j7));
+   //  insertar_ultimo(l,nodo_crear (j8));
+   //  insertar_ultimo(l,nodo_crear (j9));
+   //  // insertar_ultimo(l,nodo_crear (j9));
+
+
+   //  lista *selecciones= generar_selecciones(l);
+
+   //  nodo *it2 = selecciones ->primero;
+   //  while(it2!=NULL)
+   //      {
+   //          FILE *archivo = fopen("imprimirListas.txt","a");
+   //          imprimir_seleccion(it2->datos,archivo);
+   //          fclose(archivo);
+   //          it2 = it2->sig;    
+   //      }
+
+
+
+   //  nodo *it= selecciones->primero;
+   //  while (it!=NULL)
+   //      {
+   //          borrar_seleccion(it->datos);
+   //          nodo *aux = it->sig;
+   //          free(it);
+   //          it= aux;
+   //      }
+   //  free(selecciones);
+
+   // lista_borrar(l, (tipo_funcion_borrar) borrar_jugador);
+  
+
+                                                        // altura promedio 
+
+//     char *nom= "hola";
+//     char *pais = "arg";
+//     unsigned int num = 10;
+//     unsigned int alt = 189;
+
+//     jugador *j1 = crear_jugador(nom, pais, num,alt);
+
+//     lista *l= lista_crear();
+
+//     insertar_ultimo(l,nodo_crear (j1));
+
+//     nodo *it=l->primero;
+//     lista *paises = lista_crear();
+//     while( it !=NULL)
+//         {   
+//             jugador *j = (jugador *) it->datos;
+//             if (!pertenece(paises, j->pais, (tipo_funcion_cmp) string_iguales))
+//             // if (!pertence(paises, it->datos, (tipo_funcion_cmp) pais_jugador))
+//                 {   
+//                     // char *aux = string_copiar(j->pais);
+//                     insertar_ultimo(paises, nodo_crear (j->pais));
+//                 }
+//             it= it->sig;
+//         }
+
+// lista *mapea= mapear (l,normalizar_jugador);
+// lista_borrar(mapea, borrar_jugador);
+// lista_borrar(l, borrar_jugador);
+
+// it=paises->primero;
+//         while (it!=NULL)
+//             {       
+//                 // char *aux=it->datos;
+//                 // free(aux);              
+//                 nodo *aux2 = it->sig;
+//                 free(it);
+//                 it= aux2;
+//             }
+//         free(paises);
+
+
+
+   // jugador *j1 = crear_jugador("a", "arg", 10,198);
+   //  jugador *j2 = crear_jugador("f", "arg", 10, 145);
+
+   //  lista *l= lista_crear();
+
+   //  insertar_ultimo(l,nodo_crear (j1));
+   //  insertar_ultimo(l,nodo_crear (j2));
+
+   //  ordenar_lista_jugadores(l);
+   //  ordenar_lista_jugadores(l);
+
+   //  double d = altura_promedio(l);
+   //  printf("%.2f\n", d);
+   //   double d1 = altura_promedio(l);
+   //  printf("%.2f\n", d1);
+
+
+//         jugador *j1 = crear_jugador("a", "arg", 10,198);
+//     jugador *j2 = crear_jugador("f", "arg", 10, 145);
+//     jugador *j3 = crear_jugador("dd", "chi", 10, 156);
+
+
+//     lista *l= lista_crear();
+
+//     insertar_ultimo(l,nodo_crear (j1));
+//     insertar_ultimo(l,nodo_crear (j2));
+//     insertar_ultimo(l,nodo_crear (j3));
+
+// nodo *it=l->primero;
+//     lista *paises = lista_crear();
+//     while( it !=NULL)
+//         {   
+//             jugador *j = (jugador *) it->datos;
+//             if (!pertenece(paises, j->pais, (tipo_funcion_cmp) string_iguales))
+//             // if (!pertence(paises, it->datos, (tipo_funcion_cmp) pais_jugador))
+//                 {   
+//                     // char *aux = string_copiar(j->pais);
+//                     insertar_ultimo(paises, nodo_crear (j->pais));
+//                 }
+//             it= it->sig;
+//         }
+
+// it=paises->primero;
+// jugador *jAux= crear_jugador("hola",it->datos,10,1);
+//             nodo *nodoJug = nodo_crear( jAux);
+// borrar_jugador (jAux);
+//             free(nodoJug);
+
+
+// lista_borrar(l, borrar_jugador);
+
+// it=paises->primero;
+//         while (it!=NULL)
+//             {       
+//                 // char *aux=it->datos;
+//                 // free(aux);              
+//                 nodo *aux2 = it->sig;
+//                 free(it);
+//                 it= aux2;
+//             }
+//         free(paises);
+
+
+
+//     lista *normalizados = mapear(l,  normalizar_jugador);
+
+//     nodo *it = l->primero;
+
+//     // busco todos los paises distintos 
+//     it=l->primero;
+//     lista *paises = lista_crear();
+//     while( it !=NULL)
+//         {   
+//             jugador *j = (jugador *) it->datos;
+//             if (!pertenece(paises, j->pais, (tipo_funcion_cmp) string_iguales))
+//             // if (!pertence(paises, it->datos, (tipo_funcion_cmp) pais_jugador))
+//                 {   
+//                     // char *aux = string_copiar(j->pais);
+//                     insertar_ultimo(paises, nodo_crear (j->pais));
+//                 }
+//             it= it->sig;
+//         }
+        
+
+
+//     // ahora tengo en paises todos los posibles que hay, sin repetidos.
+//     // vamos a crear las selecciones
+
+//     it=paises->primero;
+//     lista *listaSelecciones = lista_crear();
+
+//     while (it!=NULL)
+//         {
+//             //esto es un poco turbio pero me creo un jugador con el pais que estoy iterando para 
+//             //filtrar los jugadores que tiene ese pais
+
+//             jugador *jAux= crear_jugador("hola",it->datos,10,1);
+//             nodo *nodoJug = nodo_crear( jAux);
+//             lista *filtrar = filtrar_jugadores (normalizados, pais_jugador, nodoJug);
+//             double altura = altura_promedio(filtrar);
+//             lista *ordenar = ordenar_lista_jugadores(filtrar);
+//             char *pais = it->datos;
+//             seleccion *seleccion = crear_seleccion(  pais,altura,ordenar);
+//             insertar_ordenado(listaSelecciones,seleccion, menor_seleccion);
+
+//             // borro los aux que usé
+
+//             borrar_jugador (jAux);
+//             free(nodoJug);
+//             lista_borrar(filtrar, (tipo_funcion_borrar) borrar_jugador);
+//             lista_borrar(ordenar, (tipo_funcion_borrar) borrar_jugador);
+
+
+//             it= it->sig;
+//         }
+
+//         it=paises->primero;
+//         while (it!=NULL)
+//             {       
+//                 // char *aux=it->datos;
+//              //    free(aux);               
+//                 nodo *aux2 = it->sig;
+//                 free(it);
+//                 it= aux2;
+//             }
+//         free(paises);
+
+//         lista_borrar(normalizados, (tipo_funcion_borrar) borrar_jugador);
+
+// // nodo *it2 = listaSelecciones ->primero;
+
+
+// //     while(it2!=NULL)
+// //     {
+
+// //     FILE *archivo = fopen("imprimirListas.txt","a");
+// //     imprimir_seleccion(it2->datos,archivo);
+// //     fclose(archivo);
+// //     it2 = it2->sig;    }
+
+//          nodo *it3= listaSelecciones->primero;
+//     while (it3!=NULL)
+//         {
+//             seleccion *s = (seleccion *)it3->datos;
+//             free(s->pais);
+//             nodo *aux = it3->sig;
+//             free(it3);
+//             it3= aux;
+//         }
+//     free(listaSelecciones);
+
+//         lista_borrar(l, (tipo_funcion_borrar) borrar_jugador);
+
+
+
+
+ //  lista* res = lista_crear();
+ //  char* paises[] = {
+ //    "Argentina","Turquia","Groenlandia","Finlandia",
+ //    "Rusia", "USA", "España","Australia",
+ //    "Nueva Zelanda", "Alemania", "Sudan", "Brazil"
+ //  };
+ //  char* jugadores[] = {
+ //    "Tim","Andrea", "Manu", "LeBron",
+ //    "Manut","Muggsy","Kobe","Ewing",
+ //    "Dwayne", "Michael", "Kawhi", "Luis",
+ //    "Yao", "Russel", "Melo", "Tony"
+ //  };
+ //  int camiseta_base = 10;
+ //  for(int i = 0; i< 5; i++) {
+ //    jugador* j = crear_jugador(
+ //        jugadores[rand()%16], paises[rand()%12], (camiseta_base+i)%100, 170+(rand()%40));
+ //    insertar_ordenado(res, (void*)j, (tipo_funcion_cmp)&menor_jugador);
+
+ //                FILE *archivo = fopen("imprimirListas.txt","a");
+ //           lista_imprimir(res, "imprimirListas.txt", (tipo_funcion_imprimir)
+ // imprimir_jugador);
+ //           fprintf(archivo, "%s\n", "hola" );
+ //            fclose(archivo);
+ //        }
+ 
+
+ //            FILE *archivo = fopen("imprimirListas.txt","a");
+ //           lista_imprimir(res, "imprimirListas.txt", (tipo_funcion_imprimir)
+ // imprimir_jugador);
+ //            fclose(archivo);
+
+//     lista *res = lista_crear();
+
+// jugador *j2 = crear_jugador ("Michael", "Argentina" ,12 ,196); 
+// jugador *j1 = crear_jugador ("Michael", "Argentina" ,12 ,193); 
+// jugador *j = crear_jugador ("Tony","USA" ,11, 205); 
+//     insertar_ordenado(res, j, (tipo_funcion_cmp)&menor_jugador);
+
+//  FILE *archivo = fopen("imprimirListas.txt","a");
+//            lista_imprimir(res, "imprimirListas.txt", (tipo_funcion_imprimir)
+//  imprimir_jugador);
+
+
+    
+//     insertar_ordenado(res, j1, (tipo_funcion_cmp)&menor_jugador);
+    
+
+//            lista_imprimir(res, "imprimirListas.txt", (tipo_funcion_imprimir)
+//  imprimir_jugador);
+
+
+//     insertar_ordenado(res, j2, (tipo_funcion_cmp)&menor_jugador);
+
+//            lista_imprimir(res, "imprimirListas.txt", (tipo_funcion_imprimir)
+//  imprimir_jugador);
+
+//             fclose(archivo);
+
+// jugador *j1 = crear_jugador ("Michael", "Argentina" ,12 ,171); 
+// jugador *j3 = normalizar_jugador(j1);
+
+
+
+//  FILE *archivo = fopen("imprimirListas.txt","a");
+//     imprimir_jugador(j3,archivo);
+//     fclose(archivo);
+
+
+// jugador *j = crear_jugador ("Tony","USA" ,11, 205); 
+// bool d=menor_jugador(j1, j);
+// printf("%d\n", d);

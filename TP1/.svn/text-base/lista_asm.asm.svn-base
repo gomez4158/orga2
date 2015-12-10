@@ -1,0 +1,1027 @@
+;tengo que pasar bien los parametros con los tamaños correctos
+global nodo_crear ;listo ya funciona
+global lista_crear ;listo ya funciona
+global lista_borrar	;listo ya funciona
+global lista_imprimir ;listo ya funciona
+global lista_imprimir_f ; listo ya funciona
+global crear_jugador ;listo ya funciona
+global menor_jugador;listo ya funciona
+global normalizar_jugador ; cómo manejo a 30.48? los nombre de los jugadores arrancan siempre con mayuscula?
+global pais_jugador ;listo y ya funciona
+global borrar_jugador ; listo y ya funciona
+global imprimir_jugador ; listo y ya funciona
+global crear_seleccion ;MAL!!!
+global menor_seleccion ;listo, probar
+global primer_jugador ;listo
+global borrar_seleccion ;
+global imprimir_seleccion; 
+global insertar_ordenado ;listo dudas
+global mapear ;listo
+global ordenar_lista_jugadores 
+global altura_promedio ;listo
+
+;funciones auxiliares 
+
+global string_comparar ;listo
+global string_iguales; listo
+global string_copiar;listo
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+extern filtrar_jugadores
+extern insertar_ultimo
+extern malloc 
+extern free  
+extern printf 
+extern fprintf
+extern fopen
+extern fclose
+
+
+; SE RECOMIENDA COMPLETAR LOS DEFINES CON LOS VALORES CORRECTOS
+%define NULL 0 ;valor?
+%define TRUE 1
+%define FALSE 0
+
+%define NODO_SIZE      24 
+%define LISTA_SIZE     16 
+%define JUGADOR_SIZE   21 
+%define SELECCION_SIZE 24 
+
+%define OFFSET_DATOS 0
+%define OFFSET_SIG   8 
+%define OFFSET_ANT   16 
+
+%define OFFSET_PRIMERO 0
+%define OFFSET_ULTIMO  8 
+
+%define OFFSET_NOMBRE_J 0
+%define OFFSET_PAIS_J   8 
+%define OFFSET_NUMERO_J 16 
+%define OFFSET_ALTURA_J  17
+
+%define OFFSET_PAIS_S      0
+%define OFFSET_ALTURA_S    8
+%define OFFSET_JUGADORES_S 16
+
+
+
+
+
+section .rodata ;sirve para ?
+
+
+section .data ; sirve para?
+	imprimir_J:  DB "%s %s %u %u", 10, 0 ; 10 de fin deline y el 0 para finalizar el char 
+	vacia : DB "<vacia>",10,0
+	imprimirListas: DB "imprimirListas.txt",0
+	apend: DB "a",0
+section .text
+
+; FUNCIONES OBLIGATORIAS. PUEDEN CREAR LAS FUNCIONES AUXILIARES QUE CREAN CONVENIENTES
+
+;----------------------------------------------------------------------------------
+nodo_crear: ;corre,TESTEAR! los datos los tengo que copiar?
+	
+	;stack frame
+	push rbp
+	mov rbp, rsp
+	push rbx
+	sub rsp, 8
+
+
+	mov rbx, rdi ; en rbx está el puntero al jugador
+	mov rdi, NODO_SIZE ; pido memoria para un nodo y obtengo el puntero en rax
+	call malloc
+
+	mov qword[rax+OFFSET_SIG],NULL ;pongo null en siguinte del nodo nuevo
+	mov qword[rax+OFFSET_ANT],NULL ; pongo null en anteriror del nodo nuevo
+	mov qword [rax+OFFSET_DATOS], rbx ; en r14 está el puntero a los datos
+
+	.fin:
+		add rsp,8
+		pop rbx
+		pop rbp
+		ret
+
+;----------------------------------------------------------------
+
+lista_crear: ;corre, testear!
+
+;stack frame
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r12
+	push r13
+	push r14 ;la pila está alineada
+
+	;Codigo
+	mov rdi, LISTA_SIZE
+	call malloc
+
+	mov qword [rax+OFFSET_PRIMERO],NULL
+	mov qword [rax+OFFSET_ULTIMO], NULL
+
+	.fin:
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+;--------------------------------------------------------
+lista_borrar:
+
+;armo stack frame
+		push rsp
+		mov rsp, rbp
+		push rbx
+		push r12
+		push r13
+		push r14
+		push r15
+
+		;codigo
+
+		mov rbx, rdi ; en rbx tengo el puntero a la lista
+		mov r12, rsi ; en r12 tengo la funcion borrar dato
+		mov r14, [rbx+OFFSET_PRIMERO] ; en r14 está el primer nodo 
+		mov r13, [rbx+OFFSET_ULTIMO] ;en r13 está el último nodo
+
+
+		cmp r14, NULL 
+		je .fin ; no hay nada que borrar
+		;hay al menos un elemento
+		.ciclo: ; voy a ir borrando los nodos de a uno
+;			cmp r14, r13 ; si el nodo por el que voy es el último
+;			je .borrarUltimo;
+			;borrar dato
+			mov rdi, [r14+OFFSET_DATOS] ; doy parámetros al borrar
+			call r12; llamo a borrar dato
+			;preparo el siguiente nodo para borrar dato y 
+			; borro el nodo
+			mov r15, [r14+OFFSET_SIG] ; guardo en r14 temporalmente el siguiente 
+			mov rdi , r14 ; pongo el puntero del nodo para borrarlo
+			call free
+			cmp r14, r13 
+			je .borrarlista ; ya borré el ultimo nodo
+			;hay más nodos
+			mov r14,r15; sigo con el siguiente nodo
+			jmp .ciclo
+
+		.borrarlista:
+			mov rdi, rbx
+			call free
+
+
+
+		.fin:
+			pop r15
+			pop r14
+			pop r13
+			pop r12
+			pop rbx
+			pop rbp
+			ret
+
+;---------------------------------------------------------
+
+lista_imprimir: 
+;armo el stack frame
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r12
+	push r13
+	push r14
+	push r15
+	sub rsp, 8 ; pila alineada
+
+	;codigo
+	mov r15, rdi; en r15 tengo el puntero a la lista
+	mov r14, rsi ; en r14 tengo el char del archivo
+	mov r13, rdx ; acá tengo la función imprimir de nodo
+
+	;tengo que abrir el archivo
+	mov rdi, imprimirListas ; 
+	mov rsi, apend
+	call fopen
+	mov r12, rax ; ahora en r12 tengo el puntero al archivo
+
+	mov rdi, r15 ; le doy el pntero a la lista a lista_imprimir_f
+	mov rsi, r12 ; el puntero a la archivo que cree recién
+	mov rdx, r13 ; le paso la función imprimir
+	call lista_imprimir_f
+	;lista imprimir f ya imprimió todo ahora tengo que cerrar el archivo
+
+	mov rdi, r12
+	call fclose
+
+		add rsp, 8
+		pop r15
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp	
+		ret
+
+
+
+
+
+
+;--------------------------------------------------
+
+
+lista_imprimir_f: ;NI
+;armo stack frame
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r12
+	push r13
+	push r14
+	push r15
+	sub rsp, 8 ; pila alineada
+
+	;codigo
+	mov r15, rdi;  en r15 tengo el puntero a la lista
+	mov r14, rsi; en r14 tengo el puntero al archivo
+	mov r13, rdx; en r13 tengo la función imprimir 
+	mov r12, [r15+OFFSET_PRIMERO]
+	mov rbx, [r15+OFFSET_ULTIMO]
+
+	cmp r12, NULL ; es la lista vacía?
+	je .fin
+
+	.ciclo:
+
+		; ahora voy a llamar a la funcion de imprimir dato
+		mov rdi,[r12 + OFFSET_DATOS]
+		mov rsi, r14 ; le doy el puntero al archivo
+		call r13 ; llamo a la función imprimir.
+
+		mov r12, [r12+OFFSET_SIG]
+		
+		cmp r12, rbx ; es el último nodo ? 
+		je .fin
+		jmp .ciclo
+
+	.fin: 
+		add rsp, 8
+		pop r15
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+	
+;------------------------------------------------------------------
+crear_jugador: ;
+
+;stack frame
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r12
+	push r13
+	push r14 
+	push r15 
+	sub rsp,8 ;la pila está alineada
+
+	;codigo 
+	mov rbx, rdi ; el puntero al nombre está en rdi
+	mov r15, rsi ; el puntero al pais está en rsi
+	mov r14b,dl  ; el numero esta en dl
+	mov r13d, ecx ; la altura esta en ecx
+
+	mov rdi, JUGADOR_SIZE ; "declaro" una struct jugador_t
+	call malloc
+
+	mov r12, rax ; me guardo en r12 el puntero a la nueva struct
+	
+	mov rdi, rbx ; voy a copiar el nombre que está en rbx
+	call string_copiar
+
+	mov [r12+OFFSET_NOMBRE_J], rax ; ya tengo la copia del nombre en la estructura
+	mov rdi, r15 ;voy a copiar el pais que esta en rsi
+	call string_copiar
+
+	mov [r12+OFFSET_PAIS_J], rax ; ya tengo la copia del pais en la estructura
+	mov [r12+OFFSET_NUMERO_J], r14b; ya tengo el numero en la estructura
+	mov [r12+OFFSET_ALTURA_J], r13d ;ya tengo la altura en la estructura
+	mov rax, r12
+
+	.fin:
+		add rsp,8
+		pop r15
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+
+;-------------------------------------------------------------
+menor_jugador: ;Testear (OK!)
+	
+;stack frame
+		push RBP
+		mov RBP, RSP
+		push RBX
+		push R12
+		push R13
+		push R14
+		push R15
+
+
+		mov r15, rdi;guardo en r15 el puntero al ju1
+		mov r14, rsi; guardo en r14 el puntero al ju2
+
+		mov rdi, [r15+OFFSET_NOMBRE_J] ; en rdi está el puntero al nombre del ju1
+		mov rsi, [r14+OFFSET_NOMBRE_J] ; e rsi está el puntero al nombre del ju2
+
+		call string_comparar
+
+
+		cmp rax, -1 ; es mas chico
+		je .esMenor
+		cmp rax, 0 ; son iguales
+		je .desempate 
+		cmp rax, 1 ; es mas grande
+		je .esMayor
+
+	.esMayor:
+		mov rax, 0
+		jmp .terminar
+
+	.esMenor:
+		mov rax, 1
+		jmp .terminar
+
+	.desempate: ; desempate por la altura 
+		mov r15, [r15 + OFFSET_ALTURA_J] ;en r15 estaba el puntero inicial de rsi, y quiero su altura
+		mov r14 ,[r14 + OFFSET_ALTURA_J] ;en r14 estaba el puntero inicial de rdi y quiero su altura
+
+		cmp r15d, r14d ; es más alto
+		jl .esMenor
+		jmp .esMayor
+
+		.terminar:
+      	pop r15
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+
+;-------------------------------------------------------------
+
+normalizar_jugador: ; Testear corre
+; los nombre pueden tener números o vacíos?
+;cómo se trabaja con decimales?
+;stack frame
+		push RBP
+		mov RBP, RSP
+		push RBX
+		push R12
+		push R13
+		push R14
+		push R15
+
+	;codigo
+	mov r15, rdi ; me guardo en r15 el puntero al jugador
+	;voy a crear un nuevo jugador con crear_jugador
+	mov rdi,[r15+OFFSET_NOMBRE_J]
+	mov rsi,[r15+OFFSET_PAIS_S]
+	mov rdx,[r15+OFFSET_NUMERO_J] 
+	mov rcx, [r15+OFFSET_ALTURA_J]
+
+	call crear_jugador
+	;en rax tengo el puntero al nuevo jugador
+	;tengo que normalizarlo
+	mov r14, [rax+OFFSET_NOMBRE_J] ; pongo en r14 el puntero al nombre
+	
+	xor r12,r12
+	mov qword r12,1 ; es un contador que arranca de 1 suponiendo que la primera letra es 
+					; mayuscula
+	.normalizar:
+		cmp byte [r14+r12], NULL
+		je .normalizado
+		cmp byte [r14+r12], 241 ;Ñ
+		je .modificarEgne
+		mov r13, [r14-32] ; r13 es un axu, por no poner hacer memoria memoria
+		mov [r14],r13 ; se pone en mayuscula
+		inc r12
+		jmp .normalizar
+
+	.modificarEgne:
+		mov byte [r14] ,241
+		inc r12
+		jmp .normalizar
+
+	.normalizado:
+	.pasarAPies:
+		mov r14, [rax+OFFSET_ALTURA_S] ; pongo en r14 el puntero a la altura
+
+		.dividir:
+		;cómo se trabaja con decimales?
+
+	.terminar:
+      	pop r15
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+;-------------------------------------------------------------------
+
+pais_jugador: ;TESTEAR (ok!)
+		push RBP
+		mov RBP, RSP
+		push RBX
+		push R12
+		push R13
+		push R14
+		push R15
+
+		mov rdi, [rdi + OFFSET_PAIS_J ] ;en rdi está el puntero al pais del ju1
+		mov rsi, [rsi + OFFSET_PAIS_J]; en rsi está el puntero al pais del ju2
+
+		call string_iguales
+
+	.terminar:
+      	pop r15
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+;---------------------------------------------------------
+borrar_jugador: ; compila?
+;armo stack frame
+
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r12
+	push r13
+	push r14
+
+	;codigo
+	mov r15, rdi ; en r15 tengo el puntero al jugador
+	mov rdi, [r15+OFFSET_NOMBRE_J]
+	call free ;libero el nombre
+	mov rdi, [r15+OFFSET_PAIS_J]
+	call free ;libero el pais
+	mov rdi, r15
+	call free ;libero el jugador
+
+	.fin:
+		pop r14
+		pop r13
+		pop r12
+		pop rbx	
+		pop rbp
+		ret
+
+;--------------------------------------------------------
+imprimir_jugador: ;TESTEAR (OK!) me falta un enter al final
+	
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r15
+
+
+	;codigo
+	mov r15, rdi ; en r15 está el puntero al jugador
+	mov rdi, rsi; el punter el archivo
+	mov rsi, imprimir_J
+	mov rcx, [r15+OFFSET_NOMBRE_J]
+	mov rdx, [r15+OFFSET_PAIS_J]
+	xor r8,r8
+	mov r8b, [r15+OFFSET_NUMERO_J]
+	xor r9, r9
+	mov r9d, [r15+OFFSET_ALTURA_J]
+
+	call fprintf ;por archivo
+
+	.fin:
+		pop r15
+		pop rbx
+		pop rbp
+		ret
+
+;--------------------------------------------------------
+
+crear_seleccion: ; MAL!
+;stack frame
+	push rbp
+	mov rbp, rsp
+	push RBX
+	push R12
+	push R13
+	push R14 ;pila alineada
+
+	;codigo
+	mov r15, rdi ; en r15 tengo el puntero al país
+	mov rdi, r15 ; quiero copiar el país
+	call string_copiar
+	mov r15, rax ; en r15 ahora tengo la copia del pais
+	;vamos a crear la seleccion
+	mov rdi, SELECCION_SIZE ; el puntero a la nueva selección lo tengo  en rax
+	mov [rax+OFFSET_PAIS_S],r15; ya tengo la copia del pais en la seleccion
+	mov [rax+OFFSET_ALTURA_S], rsi ; ya tengo la altura en la seleccion
+	mov [rax+OFFSET_JUGADORES_S],rcx ; ya tengo los jugardores en la sellecion
+
+	.terminar:
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+
+
+;___--.----------------------------------------
+menor_seleccion: ;testear 
+		push RBP
+		mov RBP, RSP
+		push RBX
+		push R12
+		push R13
+		push R14
+		push R15
+		sub rsp, 8 ; pila alineada
+
+		mov rdi, [rdi +OFFSET_PAIS_S ] ;ahora el puntero es el inicio del nombre ju1
+		mov rsi, [rsi + OFFSET_PAIS_S];ahora el puntero es el inicio del nombre ju2
+
+		call string_comparar
+
+		cmp rax, -1
+		je .esMenor
+		mov rax, FALSE
+		jmp .terminar ; no es menor
+
+
+	.esMenor:
+		mov rax, TRUE
+	.terminar:
+		add rsp,8
+      	pop r15
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+;-------------------------------------------------------
+primer_jugador:
+
+;stack frame 
+		push rbp
+		mov rbp, rsp
+		push rbx
+		push r12
+		push r13
+		push r14
+
+		;codigo
+
+		mov r15, rdi ; me guardo en rdi el puntero a la seleccion
+		mov r15, [r15+OFFSET_JUGADORES_S] ; en r15 tengo el puntero a la lista de jugadores
+		mov r15, [r15 +OFFSET_PRIMERO] ; en r15 está el primer nodo de la lista de jugadores
+		mov r15, [r15+OFFSET_DATOS]; en r15 tengo el puntero al primer jugador
+		mov rdi, [r15+OFFSET_NOMBRE_J]
+		mov rsi, [r15+OFFSET_PAIS_J]
+		mov rdx, [r15+OFFSET_NUMERO_J]
+		mov rcx, [r15+OFFSET_ALTURA_J] ; puse los parametros de la funcion crear_jugador
+		call crear_jugador
+		; en rax está el puntero al primer jugador hecho por copia.
+
+	.terminar:
+
+		pop r14
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+
+;----------------------------------------------------
+borrar_seleccion:
+	; COMPLETAR AQUI EL CODIGO
+	;llamo a borrar de lista pero el borrar dato? y borro el pais
+;----------------------------------------------------
+
+imprimir_seleccion:
+	; COMPLETAR AQUI EL CODIGO
+;----------------------------------------------------
+
+insertar_ordenado:
+
+;armo stack frame
+		push rbp
+		mov rbp, rsp
+		push rbx
+		push r12
+		push r13
+		push r14
+		push r15
+		sub rsp,8
+
+		;codigo
+		mov rbx, rdi ; en r15 está el puntero a la lista
+		mov r15, [rdi+OFFSET_PRIMERO] ;en r15 está el puntero al primero
+		mov rbx, [rsi+OFFSET_ULTIMO] ; en rbx está el puntero al último
+		mov r14, rdi; en r14 está el puntero al dato 
+		mov r13, rdx; está la función comparar
+
+		cmp r15, NULL; si es la lista vacía inserto el nodo 
+		je .esVacia
+		
+		.ciclo:
+			mov rdi, r14 ; es menor el nodo a insertar que el nodo que estor viendo?
+			mov rsi, [r15+OFFSET_DATOS]
+			call r13
+
+			cmp rax, TRUE
+			je .esMenor
+			cmp r15, rbx ; es mayor el que quiero insertar, voy por el último nodo?
+			je .insertarUltimo
+			mov r15, [r15+OFFSET_SIG] ; sigo mirando los otros nodos
+			jmp .ciclo
+
+		.esMenor: ;; r15 es el nodo siguiente al nodo a insertar.
+			;crear un nodo
+			mov rdi, r14 ;le paso a nodo_crear el *datos
+			call nodo_crear
+			;mov rdi, NODO_SIZE
+			;call malloc
+
+			;mov qword [rax+OFFSET_SIG], NULL ; creo que no es necesario???????????
+			;mov qword[rax+OFFSET_ANT], NULL ; creo que no es necesario???????????
+			;mov [rax+OFFSET_DATOS], r14 ; le meto los datos de entrada
+			;ya tengo el nuevo nodo, vamos a usar insertar antes de para insertarlo ordenado
+			mov rdi, rbx ; el puntero a la lista
+			mov rsi, rax ; el puntero al nuevo nodo con los datos
+			mov rdx, r15 ; el nodo de guia de insertar antes de.
+			call insertar_antes_de;
+			jmp .fin
+
+		.esVacia: ; tengo que insertar el nuevo nodo  y decirle a la lista que primero y ultimo es el nuevo
+			;creo el nuevo nodo
+			mov rdi, r14
+			call nodo_crear
+			;mov rdi, NODO_SIZE
+			;call malloc
+
+			;mov qword [rax+OFFSET_SIG], rax ; el siguiente es el nodo nuevo
+			;mov qword[rax+OFFSET_ANT], rax ; el anterior es el nodo nuevo
+			;mov [rax+OFFSET_DATOS], r14 ; le meto los datos de entrada
+			;ahora tengo que que decirle a la lista que su primer y último nodo es el nuevo
+			mov [rbx+OFFSET_PRIMERO], rax
+			mov [rbx+OFFSET_ULTIMO], rax
+			jmp .fin
+
+		.insertarUltimo: ; puedo usar la de c++ ?
+			mov rdi, r14 ; le paso a nodo_crear el *datos
+ 			call nodo_crear
+			;mov rdi, rbx ; le doy la el puntero a la lista
+			;mov rdi, NODO_SIZE
+			;call malloc
+
+			;mov qword [rax+OFFSET_SIG], NULL ; creo que no es necesario??????????
+			;mov qword[rax+OFFSET_ANT], NULL ; creo que no es necesario????????????
+			;mov [rax+OFFSET_DATOS], r14 ; le meto los datos de entrada
+			mov rsi, rax
+			call insertar_ultimo
+			jmp .fin
+
+		.fin:
+			add rsp,8
+			pop r15
+			pop r14
+			pop r13
+			pop r12
+			pop rbx
+			pop rbp
+			ret
+
+;----------------------------------------------------
+
+altura_promedio:
+;stack frame
+
+		push rbp
+		mov rbp, rsp
+		push rbx
+		push r12
+		push r13
+		push r14 
+		push r15 
+		sub rsp, 8; pila alineada
+
+		; codigo
+		xor r13, r13 ; acumulador
+		xor r12, r12 ; contador
+		mov r15, rdi ; iterador 
+		.ciclo:
+			cmp r15, [rdi+OFFSET_ULTIMO] ; llegué al último?
+			je .esElUltimo ; cuidado que puede ser vacia la lista
+			add r13, [r15+OFFSET_ALTURA_J] ;sumo la altura del i-esimo
+			inc r12 
+			jmp .ciclo 
+
+		.esElUltimo:
+			cmp qword [r15], NULL
+			je .esListaVacia
+			add r13, [r15+OFFSET_ALTURA_J] ; porque el ciclo no me sumaba el último nodo
+			inc r12 ; el ciclo tampoco incrementa en el último nodo.
+
+		.promedio:
+			; falta promedio
+			jmp .fin;
+
+		.esListaVacia:
+			mov rax, 0; el promedio de una lista vacia es 0?
+			jmp .fin
+
+		;.esUnico:
+		;	mov rax, r13 ; es la altura del único jugador
+
+		.fin:
+			add rsp,8
+			pop r14
+			pop r13
+			pop r12
+			pop rbx
+			pop rbp
+			ret
+;----------------------------------------------------
+
+ordenar_lista_jugadores:
+	; COMPLETAR AQUI EL CODIGO
+;----------------------------------------------------
+
+mapear:
+;armar stack frame
+		push rbp
+		mov rbp, rsp
+		push rbx
+		push r12
+		push r13
+		push r14
+		push r15
+		sub rsp, 8
+
+		;codigo
+		mov r15, rdi;  en r15 está el puntero a la lista.
+		mov r14, rsi ; en r14 está la fución de mapeo.
+		mov r13, [r15+OFFSET_PRIMERO]; en r13 está el primer nodo
+		mov r12, [r15+OFFSET_ULTIMO]; en r12 está el último nodo
+
+		;crear la lista para retornar
+		call lista_crear
+		mov rbx, rax ; en rbx está el puntero a la lista nueva
+
+		cmp r13, NULL
+		je .fin ; no hay nada que mapear
+		;mapear para listas no vacias 
+
+		.ciclo:
+			;crear jugador nuevo para aplicarle la funcion mapeo
+			mov rdi, [r13+OFFSET_NOMBRE_J]
+			mov rsi, [r13+OFFSET_PAIS_J]
+			mov rcx, [r13+OFFSET_NUMERO_J]
+			mov rdx, [r13+OFFSET_ALTURA_J]
+			call crear_jugador
+			mov rdi, rax
+			call r14 ; le aplico la función mapeo
+
+			mov rdi, rax
+			call nodo_crear ; creo el nodo con los datos mapeados
+
+			mov rdi, rbx ; el puntero a la lista
+			mov rsi, rax ; el nodo a insertar al final para mantener el orden.
+			call insertar_ultimo
+
+			;ahora tengo que seguir iterando la lista de entrada
+			cmp r13, r12 ; es el último?
+			je .fin
+			mov r13, [r13+OFFSET_SIG]
+			jmp .ciclo
+
+
+		.fin:
+			add rsp,8
+			pop r15
+			pop r14
+			pop r13
+			pop r12
+			pop rbx
+			pop rbp
+			ret
+
+
+;-----------------------------------------------------------------
+;FUNCIONES AUX
+
+string_iguales:
+	
+	; Armo stack frame SALVANDO TODOS los registros
+		push RBP
+		mov RBP, RSP
+		push RBX
+		push R12
+		push R13
+		push R14
+		push R15
+
+		call string_comparar
+
+		cmp rax, 1 ; resultado de string_comparar positivo
+		je .esDistinto
+		cmp rax, -1 ; resultado de string_comparar negativo
+		je .esDistinto
+		cmp rax, 0 ; resultado de string_comparar igual
+		je .esIgual
+
+		.esDistinto:
+			mov rax, FALSE
+			jmp .terminar
+
+		.esIgual:
+			mov rax, TRUE 
+			jmp .terminar
+
+      	.terminar:
+	      	pop r15
+			pop r14
+			pop r13
+			pop r12
+			pop rbx
+			pop rbp
+			ret
+
+;--------------------------------------------
+string_comparar: ;ba baaa dice que son iguales
+				 ;baaa ba 
+
+	; Armo stack frame SALVANDO TODOS los registros
+		push RBP
+		mov RBP, RSP
+		push RBX
+		push R12
+		push R13
+		push R14
+		push R15
+		sub rsp, 8
+
+		;Codigo
+     	xor r12, r12 ; lo uso como indice de los ciclos
+
+
+      	.ciclo:
+      		mov r13b, [rdi  + r12] ; r12-esima letra del char1
+      		mov r14b, [rsi + r12] ; r12-esima letra del char2
+      		cmp r13b, r14b 
+      		jg .esMasGrande 
+      		cmp r13b, r14b 
+      		jl .esMasChico
+            cmp byte r13b, 0 ; en r13b está el r12-esimo del char1
+            je .finChar1 ; termino el char1
+            cmp byte r14b, 0 ; en r14b está el r12-esimo del char2
+            je .finChar2
+      		inc r12 ; r12 = r12 +1
+      		jmp .ciclo ;termino de iterar cuando uno terminó o (r13b >r14b o r13b <r14b)
+			
+		.finChar1:
+			cmp byte r14b, 0 ; terminó char2 también? 
+			je .sonIguales
+            jmp .esMasChico
+
+		.finChar2:
+		    cmp byte r13b, 0 ; terminó char1 también? 
+		    je .sonIguales
+		    jmp .esMasGrande
+
+		.esMasChico:
+			mov rax, -1
+			jmp .terminar
+
+		.esMasGrande:
+			mov rax, 1
+			jmp .terminar
+
+		.sonIguales:
+      		mov rax, 0 
+      		JMP .terminar
+
+      .terminar:
+      		add rsp,8
+      		pop r15
+			pop r14
+			pop r13
+			pop r12
+			pop rbx
+			pop rbp
+			ret
+;-------------------------------------
+string_copiar: ;(OK!)
+	;armo stack frame
+		push rbp
+		mov rbp, rsp
+		push rbx
+		push r12
+		push r13 ; pila alineada no uso r14 y r15
+
+		;busco el tamaño del string y lo voy a guardar en r12
+		xor r12,r12  
+		.ciclo:
+			cmp byte [rdi +r12], 0
+			je .termine
+			inc r12 
+			jmp .ciclo
+
+		.termine: ; me va a decir el tamaño del string sin contar el 0
+			inc r12 ; ahora es el tamaño total	
+			push rdi ; me guardo rdi por si lo rompe malloc
+			push rdi ;pila alineada
+			mov rdi, r12
+			call malloc ; en rax está el puntero al nuevo string
+			pop rdi
+			pop rdi ; regreso al rdi de antes
+
+			xor r13, r13
+			inc r12 ; para que ponga el 0 también 
+					; ahora r12 es el tamaño más 1
+		.copiar:
+			mov rbx, [rdi+r13] ; rbx lo uso como temporal
+			mov [rax+r13], rbx
+			cmp r13,r12
+			je .fin
+			inc r13
+			jmp .copiar
+
+		.fin:
+		pop r13
+		pop r12
+		pop rbx
+		pop rbp
+		ret
+
+;-----------------------------------------------------
+
+insertar_antes_de:; ; falta modificar la lista MIRAR
+	
+	;armo stack frame
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r12
+	push r13
+	push r14 
+	push r15
+	sub rsp, 8 ; pila alineada
+
+	mov qword r15, [rdi + OFFSET_PRIMERO] ; en r15 está el primer nodo de la lista
+	mov r14, rsi ; en r14 está el puntero del nodo que voy a insertar
+	mov r13 , rdx ; en rdx tengo el puntero al nodo que busco
+
+	; voy a buscas el nodo anterior al que busco
+	; en r15 va a estar el "anterior"
+	mov qword r12, [r15+OFFSET_SIG] ; en r12 va a estar el "siguiente"
+	.ciclo:
+		cmp qword r12, NULL ; por si no estaba el que busco
+		je .fin
+		cmp r12, r13 ; es el "siguiente" el nodo que busco (rdx==r13)
+		je .loEncontre
+		mov r15, r12
+		mov qword r12, [r12 +OFFSET_SIG] 
+		jmp .ciclo
+
+	.loEncontre:
+
+		mov qword [r15+OFFSET_SIG], r14 ; el siguinte del anterior en el nuevo
+		mov qword [r12+OFFSET_ANT], r14 ; el anterior del siguiente es el nuevo
+		mov qword [r14+OFFSET_ANT], r15 ; el anteriror del nuevo es el anterior(r15)
+		mov qword [r14+OFFSET_SIG], r12 ; el siguiente del nuevo es el siguiente(r12)
+
+	.fin:
+		add rsp, 8
+		push r15
+		push r14
+		push r13
+		push r12 
+		push rbx
+		push rbp
+		ret
+

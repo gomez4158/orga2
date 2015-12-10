@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/gomez4158-orga2/!svn/ver/26
+END
+lista_asm.asm
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/gomez4158-orga2/!svn/ver/25/lista_asm.asm
+END
+lista_c.c
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/gomez4158-orga2/!svn/ver/21/lista_c.c
+END
+lista.h
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/gomez4158-orga2/!svn/ver/23/lista.h
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/gomez4158-orga2/!svn/ver/24/main.c
+END
+lista_c.o
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/gomez4158-orga2/!svn/ver/22/lista_c.o
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/gomez4158-orga2/!svn/ver/21/Makefile
+END
+enunciado-tp1.pdf
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/gomez4158-orga2/!svn/ver/10/enunciado-tp1.pdf
+END
+pruebacorta.sh
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/gomez4158-orga2/!svn/ver/21/pruebacorta.sh
+END
+salida.casoNa.catedra.txt
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/gomez4158-orga2/!svn/ver/21/salida.casoNa.catedra.txt
+END
+salida.casoNb.catedra.txt
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/gomez4158-orga2/!svn/ver/21/salida.casoNb.catedra.txt
+END
+salida.caso1.catedra.txt
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/gomez4158-orga2/!svn/ver/21/salida.caso1.catedra.txt
+END
+main
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/gomez4158-orga2/!svn/ver/24/main
+END
+salida.caso2a.catedra.txt
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/gomez4158-orga2/!svn/ver/21/salida.caso2a.catedra.txt
+END
+salida.caso2b.catedra.txt
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/gomez4158-orga2/!svn/ver/21/salida.caso2b.catedra.txt
+END
+tester.c
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/gomez4158-orga2/!svn/ver/21/tester.c
+END
+prueba.sh
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/gomez4158-orga2/!svn/ver/21/prueba.sh
+END

@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+8081204
+7955031
+7883922
+8018106
+7941505
+7919282
+7989995
+7955060
+8003819
+8156834
+
+7955031
+8018106
+7941505
+7989995
+7955060
+8003819
+esperanza:7977252
+varianza:800224094
+desvio:28288

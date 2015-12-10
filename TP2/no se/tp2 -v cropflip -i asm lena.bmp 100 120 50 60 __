@@ -1,0 +1,1 @@
+./tp2 -v cropflip -i asm lena.bmp 100 120 50 60 >> tiemposASM.txt

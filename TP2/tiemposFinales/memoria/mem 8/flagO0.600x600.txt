@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+3073284
+3072431
+3035933
+3119400
+3063376
+2987333
+3145206
+3100580
+3159131
+3062299
+
+3073284
+3072431
+3119400
+3063376
+3100580
+3062299
+esperanza:3081895
+varianza:441071240
+desvio:21001

@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : C
+  Archivo de entrada : lena.bmp
+3347495
+3376111
+3330340
+3377553
+3350225
+3326406
+3363338
+3330320
+3335584
+3362310
+
+3347495
+3330340
+3350225
+3363338
+3335584
+3362310
+esperanza:3348215
+varianza:151831740
+desvio:12322

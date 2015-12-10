@@ -1,0 +1,43 @@
+\section{Ejercicio 2}
+\subsection*{A)}
+Utilizamos la macro dada en isr.asm, que dado un entero crea un c\'odigo \_isr(). Esta funci\'on llamar\'a a la funcion en C $mostrarError$, luego desalojar\'a la  tarea actual y 
+por ultimo pasar\'a a la tarea idle, si esta no es la tarea actual.
+
+\begin{codesnippet}
+\begin{verbatim}
+%macro ISR 1
+global _isr%1
+
+_isr%1:
+    mov EAX, %1
+    PUSH EAX
+    CALL mostrarError
+    pop eax
+.fin:
+    call desalojar_tarea
+    
+    mov dword [estaIdle], 0x1
+    mov dword [selector], 0x70
+	jmp far [offset]
+    iret
+%endmacro
+\end{verbatim}
+\end{codesnippet}
+
+MostrarError es un switch case, que dado un entero entre 0 y 20 mapea un error a un mensaje(descripci\'on) y lo imprime por pantalla con la funci\'on print dada en screen.c, 
+y por ultimo llama a la funcion $mDebugger()$.
+Luego utilizamos la macro ISR para $i$, $i= 0..20$
+En isr.h llamamos a \_isr($i$), para $i= 0..20$, ya que esto ser\'a utilizado por idt.c, para obtener el offset de la rutina encargada de atender la interrupci\'on. \newline
+Por \'ultimo en idt.c inicializamos el arreglo de interrupciones con la funci\'on $idt\_inicializar$. Para esto, a su vez inicializamos a cada interrupci\'on dentro del mismo 
+por medio de una macro, \#$define$ $IDT\_ENTRY(numero)$. La misma se encarga de completar todos los campos que poseen los descriptores de segmento de las interrupciones. 
+Un offset que es la direcci\'on de la funci\'on \_isr correspondiente; segsel que se corresponde al segmento de c\'odigo nivel cero. Y los atributos 
+P=1; dpl correspondiente a la tarea y d= 1 (para 32bits). 
+
+\subsection*{B)}
+En kernel.asm llamamos a idt\_inicializar(función en $idt.c$), que completa el vector de interupciones de las posiciones 0 a 19, 32, 33 y 102 con \#define IDT\_ENTRY(numero) de la 
+forma descripta en el punto $A$.
+
+ 
+ 
+  La entrada 102 es la interrupción $mover$, la cual es llamada por las tareas. Por eso pusismos los atributos correspondientes (0xEE00) para que sea de 
+nivel 3\color{black} . Luego con LIDT cargamos el vector de interrupciones(idt_entry en $idt.h$) utilizando la estructura IDT_DESC definido en $idt.c$.

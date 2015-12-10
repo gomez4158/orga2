@@ -1,0 +1,101 @@
+
+\section{Ejercicio 6}
+\subsection*{A)}
+Dado que GDT\_COUNT(en defines.h) estaba en 30 y no nos alcanzaba lo cambiamos a 31.\newline
+En la posici\'on 13 de la GDT(tarea\_inicial) todos los campos van en 0,menos limite que es el tamaño de una $tss$ -1, tipo es 9 porque es s\'olo ejecuci\'on y acceso, s va en 0 porque es 
+del sistema, dpl es 0 porque es del kernel, p es 1 porque est\'a presente, d/b es 1 porque es a 32 bits y g est\'a en 1 porque hay granularidad.\newline
+En la posici\'on 14(idle) tenemos lo mismo que en la 13.\newline
+De la posici\'on 15 a la 22 inclusive tenemos los descriptores de la tss de las 8 tareas del jugador A, todo se completa igual que la posici\'on 13. De la posici\'on 23 a la 30 
+inclusive tenemos los descriptores de la tss de las 8 tareas del jugador B. En estos casos como esta completada tiene poca importancia porque al ser creado el zombie se 
+reescriben los campos de la tss correspondiente, para el caso que se rehusen con un nuevo zombie (donde hay que poner el estado inicial de la tarea), como es explicado en la sub-secci\'on C\newline
+Algunas cosas ser\'an completadas m\'as adelante ,como la base, ya que obtendremos la direcci\'on de las tss cuando sea necesarios crearlas.\newline
+\newpage
+\subsection*{B)}
+En el archivo tss.h armamos una struct str\_tss para completar las tss de las tareas de la siguiente forma:\newline
+\begin{codesnippet}
+\begin{verbatim}
+typedef struct str_tss {
+    \textit{unsigned short  ptl;
+    unsigned short  unused0;
+    unsigned int    esp0;
+    unsigned short  ss0;
+    unsigned short  unused1;
+    unsigned int    esp1;
+    unsigned short  ss1;
+    unsigned short  unused2;
+    unsigned int    esp2;
+    unsigned short  ss2;
+    unsigned short  unused3;
+    unsigned int    cr3;
+    unsigned int    eip;
+    unsigned int    eflags;
+    unsigned int    eax;
+    unsigned int    ecx;
+    unsigned int    edx;
+    unsigned int    ebx;
+    unsigned int    esp;
+    unsigned int    ebp;
+    unsigned int    esi;
+    unsigned int    edi;
+    unsigned short  es;
+    unsigned short  unused4;
+    unsigned short  cs;
+    unsigned short  unused5;
+    unsigned short  ss;
+    unsigned short  unused6;
+    unsigned short  ds;
+    unsigned short  unused7;
+    unsigned short  fs;
+    unsigned short  unused8;
+    unsigned short  gs;
+    unsigned short  unused9;
+    unsigned short  ldt;
+    unsigned short  unused10;
+    unsigned short  dtrap;
+    unsigned short  iomap;]}
+} \textit{__attribute__((__packed__, aligned (8))) tss;}
+
+\end{verbatim}
+\end{codesnippet}
+
+Ac\'a es donde completamos la base de la tarea idle en la GDT, pedimos la direcci\'on de tss\_idle(de la str anterior creada para ella) y shifteando "partimos" la base para 
+ubicarla en las partes $base$ de la GDT en la posici\'on de la tarea idle.\newline
+Luego para tss\_idle, ponemos todos los campos en 0 menos, $cr3$ que tiene el mismo que el kernel y es 0x27000, $eip$ en 0x16000 que es donde se encuentra la tarea, $eflags$ 
+0x0202 para que se activen las interrupciones, $esp$ y $ebp$ en 0x27000 que es la misma que la del kernel, en $cs$ ponemos la posici\'on del desciptor de c\'odigo nivel 0 
+en la GDT multiplicado por 8 (porque es el offfset), en $es$, $ss$, $ds$, $fs$ y $gs$ ponemos la posici\'on del descriptor de datos de nivel 0 en la GDT multiplicado por 8 
+(porque es el offset), y por \'ultimo $iomap$ tiene 0xffff que es algo que no tocamos.\newline
+
+\subsection*{C)}
+Tenemos 2 vectores de tss(en el archivo $tss.c$), uno para cada equipo con 8 tss dentro.
+Además contamos con 2 funciones $tss_inicializar_tarea_zombieA$ y $tss_inicializar_tarea_zombieB$ ambas hacen lo mismo pero se diferencian en el nombre para resumir las tomas de decisiones
+seg\'un que jugador es el que lanza el zombie.
+Esta función toma un $id$ (el número de zombie) y el $CR3$ correspondiente (las p\'aginas correspondientes a este zombie ya fueron mapeadas). 
+Primero al igual que la idle completa la base en la GDT de la tarea $id$. Para ello se toma $id$ y se le suma un offset, que es donde empiezan las tareas del equipo que forma parte(si es A es tarea A0=15 y si es B tarea es B0=23), para saber en que posición de la GDT está esa tarea que se quiere inicializar. Sabiendo la entrada de la GDT correspondiente, partimos la posici\'on de la TSS para ubicarla en el campo
+$base$ de la GDT. \newline
+La $tss$ del zombie la vamos a completar con todos los campos en 0 menos $esp0$ que tiene una posición de memoria libre + 0x1000, $ss0$ tiene el offset del segmento de la gdt 
+de datos nivel 0, $eflags$ = 0x202, $esp$ y $ebp$ tienen 0x08000000+0x1000, $es$, $ss$, $ds$, $fs$ y $gs$ tienen el offset del segmento de datos nivel 3 + 3 (por que tiene 
+nivel de priviligio 3), $cs$ tienen el offset del segmento de codigo nivel 3 + 3, y por último $iomap$ tiene 0xFFFF.
+
+\subsection*{D)}
+Para la $tss$ de la $tarea inicial$  ponemos la base de la tarea incial en la GDT ,de la misma forma que la idle, pedimos la direcci\'on de tss\_inicial y shifteando "partimos" 
+la base para ubicarla en las partes $base$ de la GDT en la posici\'on de la tarea inicial.\newline
+No necesitamos completar nada de los campos porque al saltar de la tarea inicial a la siguiente, \'esta TSS no se lee sin\'o que se escribe.
+
+\subsection*{E)}
+Explicado en A.
+
+
+\subsection*{F)}
+Para realizar lo pedido escribimos en $kernel.asm$ lo siguiente:
+\begin{codesnippet}
+\begin{verbatim}
+   	;Cargar tarea inicial
+    mov ax, 0x68
+    ltr ax
+    
+    ;Saltar a la primera tarea: Idle
+    ;jmp 0x70:0 ; 14 * 8 (posicion de la idle en la gdt)
+    mov dword [selector], 0x70
+    jmp far [offset]}
+\end{verbatim}
+\end{codesnippet}

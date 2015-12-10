@@ -1,0 +1,34 @@
+\section{Ejercicio 4}
+
+
+
+\subsection*{A)}
+
+4.2 Inicializando la MMU:\newline
+
+Para inicializar se completo la funci\'on $inicializar\_mmu$ en el archivo mmu.c. Como varias funciones utilizan un pedido de pagina libre, se declaro una variable global que es la encarga de dar a las mismas. $inicializar\_mmu$ va a ser la encargada de asignar el \'area con el que va a comenzar dicha variable. Finalmente para que estas funciones se pongan 
+en funcionamiento se las llamo desde kernel.asm. Tanto a $mmu\_inicializar$ como a $mmu\_inicializar\_dir\_kernel()$.
+
+\subsection*{B)}
+
+mmu\_inicializar\_dir\_zombie():\newline \newline
+Esta funci\'on  se va a encargar de inicializar un directorio y tablas de p\'agina para una tarea determinada.  Se cuenta con un total de 8 tareas por jugador. Por cada clase de 
+zombie y jugador se posee una tarea, y una p\'agina de c\'odigo que  debe ser copiadas dentro de el\_mapa es decir, a partir de la direcci\'on  0x400000. Y tambi\'en se disponen 
+de 9 paginas que deben ser mapeadas al mapa, las mismas se encuentran en la direcci\'on virtual 0x8000000. \newline
+Para estos \'ultimos mapeos se cuenta con la funci\'on $mmu\_mapear\_pagina$ (descripta en el siguiente item). Como son 9 paginas por jugador, se cuenta con mapeoAlrededor. La misma calcula la posici\'on en donde deben ser mapeadas las paginas y las mapeas utilizando la funci\'on 
+$mmu\_mapear\_pagina$. Como las paginas se utilizaran para las tareas y las mismas corren en nivel de usuario attr sera igual a 3. Y como por cada zombie hay que construir un mapa. 
+Cada uno va a poseer un cr3 distinto. El mismo se consigue pidiendo una pagina libre del \'area libre.  No solo es necesario mapear estas paginas sino que para no perder 
+informaci\'on e inicializar la page directory y la correspondiente page table se deben mapear los primeros 4 Mb y este sector se mapea con identity mapping. Entonces la funci\'on 
+creardtpt, que recibe el cr3, se va a encargar de realizar esta tarea. Esta funci\'on realiza lo mismo que  $mmu\_inicializar\_dir\_kernel()$, solo que la base de la page directoy 
+ahora es la direcci\'on del nuevo Cr3. Por ultimo, como se menciono anteriormente, es necesario copiar el c\'odigo de la tarea al mapa. Para esto se va a contar con la funci\'on 
+copiar\_c\'odigo\_zombie. Donde dado un jugador y la direcci\'on del mapa se va a encargar de copiar el c\'odigo que corresponda al \'area del mapa.\newline
+
+\subsection*{c)}
+
+$mmu\_mapear\_pagina$: dada una direcci\'on f\'isica, un cr3, una direcci\'on, virtual y el nivel de privilegio de lo 
+que se desea mapear, attr. Mapea de virtual a f\'isica, su funcionamiento es muy similar a los descripto en $mmu\_inicializar\_dir\_kernel()$, solo que ahora la base de la page directory es un cr3 pedido al \'area libre. Y el p\'arametro $base\_0\_20$ de la page directory va a ser referencia a la direcci\'on cr3 + 0x1000 , que es donde se va a inicializar 
+su page table. Como ahora se desea mapear a una direcci\'on f\'isica determinada, el campo $base\_0\_20$, de las entradas de las page table, debe apuntar a la f\'isica deseada. Y se llama a la funci\'on tlbflush para que
+se invalide la cache de traducci\'on de direcciones.\newline
+Finalmente, como cada vez que un zombie se mueve es necesario desmapear las paginas donde se encontraba anteriormente, se cuenta con la funci\'on $mmu\_unmapear\_pagina$. Que dado una direcci\'on virtual y un cr3. Se va 
+a encargar de setear el bit de presente con el valor cero de la entrada de la page table apuntada por la direcci\'on virtual. Para lograr esto, primero es necesario saber la direcci\'on de la page directory, que se consigue con el cr3 dado. Para saber cual es la entrada de la page directory nos quedamos con los primeros 10 bits de la direcci\'on virtual. Obtenida, con el campo $base$ de esta entrada y los siguientes 10 bits de la virtual. Nos ubicamos en la page table que queremos y cambiamos el valor de p a cero. \newline \newline
+

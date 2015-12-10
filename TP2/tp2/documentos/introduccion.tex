@@ -1,0 +1,16 @@
+\section{Introducci\'on}
+
+En este informe se da a conocer el desarrollo de funciones aplicadas a imagenes, que actuan como filtros. El desarrollo de este software se realizo en lenguaje C y en lenguaje assembler de la arquitectura intel x64 con instrucciones SIMD(Single Instruction, Multiple Data), con el fin de evaluar la perfomance de ambas implementaciones, para luego compararlas.
+
+Las comparaciones entre las versiones fueron realizadas por medio de la librer\'ia tiempo.h, con la cual se modifico el archivo tp2.c para incluir las mediciones.
+
+El programa se ejecuta con el siguiente formato:
+
+\begin{codesnippet}
+\begin{verbatim}
+./tp2 <opciones> <nombre filtro> <nombre archivo entrada> [parametros]
+\end{verbatim}
+\end{codesnippet}
+
+Los casos outliers fueron descartados al obtener el promedio de la cantidad de ciclos insumidos, ya que son considerados casos excepcionales y raramente recurrentes.
+

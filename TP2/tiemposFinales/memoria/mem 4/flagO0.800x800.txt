@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+4059365
+3972585
+3987519
+4039554
+4008653
+4017452
+3964454
+3978695
+3977648
+4146471
+
+3987519
+4039554
+4008653
+4017452
+3978695
+3977648
+esperanza:4001586
+varianza:506357947
+desvio:22502

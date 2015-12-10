@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+5859496
+5427962
+5445963
+5431898
+5411243
+5431131
+5447339
+5460090
+5459673
+5448513
+
+5445963
+5431898
+5431131
+5447339
+5459673
+5448513
+esperanza:5444086
+varianza:98839567
+desvio:9941

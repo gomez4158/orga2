@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+5568127
+5642356
+5550387
+5534830
+5586433
+5547507
+5554668
+5553541
+5548571
+5511123
+
+5568127
+5550387
+5547507
+5554668
+5553541
+5548571
+esperanza:5553800
+varianza:47446048
+desvio:6888

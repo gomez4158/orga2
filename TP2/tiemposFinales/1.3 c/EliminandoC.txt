@@ -1,0 +1,18 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : C
+  Archivo de entrada : lena.bmp
+10060754
+9944538
+9791284
+9953304
+9726486
+9787160
+9883446
+9965461
+9894272
+9938601
+
+esperanza:9894530
+varianza:9110882209
+desvio:95450

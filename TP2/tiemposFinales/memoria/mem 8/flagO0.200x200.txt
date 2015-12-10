@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+481207
+479095
+482590
+493975
+490380
+482243
+497937
+486264
+479836
+477103
+
+481207
+482590
+490380
+482243
+486264
+479836
+esperanza:483753
+varianza:12613320
+desvio:3551

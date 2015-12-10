@@ -1,0 +1,7 @@
+Ginobili Argentina 6 198 
+Scola Argentina 11 188 
+GINOBILI Argentina 6 6 
+SCOLA Argentina 11 6 
+GINOBILI Argentina 6 0 
+SCOLA Argentina 11 0 
+<vacia>

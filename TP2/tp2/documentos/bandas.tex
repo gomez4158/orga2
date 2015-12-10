@@ -1,0 +1,65 @@
+
+
+\subsection{Introducci\'on:}
+
+El filtro Bandas procesa los pixeles, y reescribe cada uno en escala de grises seg\'un a que "banda" pertenezca. Los grices son generados escribiendo el mismo valor en los elementos R, G y B del pixel, y la banda es seleccionada seg\'un cuanto de la sumatoria de los valores del pixel.
+
+\subsection{Bandas_c}
+
+Creamos una funci\'on auxiliar para sumar los componenotes RGB del pixel, y con este valor poder definir que valores le corresponden al nuevo pixel.
+Recorremos la imagen con dos ciclos anidados, y en cada iteraci\'on vamos entregando a la funci\'on auxiliar los datos del pixel
+
+\begin{codesnippet}
+\begin{verbatim}
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			double res = banda(src_matrix[i][j*4], src_matrix[i][j*4 +1], src_matrix[i][j*4 +2]);
+			dst_matrix[i][j*4] = res;	// es 4 y no 3 xq los pixeles son: r, g, b, alpha
+			dst_matrix[i][j*4 +1] = res;
+			dst_matrix[i][j*4 +2] = res;
+		}
+	}
+\end{verbatim}
+\end{codesnippet}
+
+\subsection{Bandas_asm:}
+
+En primer lugar notamos que la matriz puede tratarse como un vector, ya que las operaciones son realizadas seg\'un la informaci\'on de un solo pixel por vez.
+Esto hace que la cantidad de filas no afecte las operaciones.
+
+Cada vez que entramos en el ciclo leemos cuatro p\'ixeles. 
+Notamos que en cada registro XMM entran cinco p\'ixeles, pero tanto las operaciones como al escribir el nuevo pixel en la imagen destino solo podemos, como m\'aximo, escribir 
+cuatro pixeles.
+
+Dentro del ciclo utilizamos tres \textbf{pshufb} con una m\'ascara parecida. 
+Estas operaciones dividen en tres registros XMM los distintos colores del pixel para luego ser sumados con \textbf{paddd}. Es \textbf{paddd} y no otra instruccion la que usamos, porque 255*3 = 765 y 765 = 0x2FD, n\'umero que entra en 10 bites. Y esto explica porqu\'e no podiamos usar mas de cuatro pixeles.
+
+
+Lo que queda es la operaci\'on que realiza la funci\'on auxiliar en C: la ubicaci\'on de la banda y la consecuente elecci\'on del valor con el que escribir en la imagen destino.
+
+Por cada una de las bandas salvo la \'ultima, creo una m\'ascara con ese valor (96, 288, 480, 672) replicado en cada Double Word, para comparar con el valor generado con 
+la suma previa.
+
+Tambi\'en tengo m\'ascaras para los valores a escribir en la im\'agen destino (0, 64, 128, 192). Nuevamente no incluyo la \'ultima posibilidad (255), esta vez porque 
+simplemente son todos unos y para eso utilizar\'e la m\'ascara.
+
+\begin{codesnippet}
+\begin{verbatim}
+	;if x < 288 => 64
+	movdqu xmm5, [docientosochentayocho]
+	pcmpgtd xmm5, xmm2
+	;me quedo con xmm5 luego de la operacion para saber cuales son 
+	;los pixeles modificados (en xmm3)
+	movdqa xmm6, xmm5
+	xorpd xmm5, xmm3	; se elminan los que coinciden. 
+						;Se que si no coinciden son menores a 288 pero no a 96
+	pand xmm5, [sesentaycuatro]
+	;xmm4 solo debe ser modificadon donde xmm5 tiene '1'. Por eso es un or
+	por xmm4, xmm5
+	movdqa xmm3, xmm6	; me guardo siempre en xmm3 los pixeles modificados
+\end{verbatim}
+\end{codesnippet}
+
+

@@ -1,0 +1,24 @@
+Procesando...
+  Filtro             : cropflip
+  Implementación     : ASM
+  Archivo de entrada : lena.bmp
+5166317
+5309329
+5058310
+5197367
+5121945
+5181509
+5158291
+5186108
+5243033
+5123646
+
+5166317
+5197367
+5181509
+5158291
+5186108
+5123646
+esperanza:5168873
+varianza:572102524
+desvio:23918
